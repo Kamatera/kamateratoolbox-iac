@@ -8,3 +8,4 @@ resources:
 patchesStrategicMerge:
 - patch-argocd-server-deployment.yaml
 - patch-argocd-cm.yaml
+- patch-argocd-repo-server-deploy.yaml

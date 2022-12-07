@@ -8,3 +8,5 @@ infra_apps:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
     targetRevision: main
     path: apps/vault
+  sourceVaultPluginHelmValueFiles:
+  - values.yaml

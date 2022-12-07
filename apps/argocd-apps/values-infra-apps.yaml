@@ -1,1 +1,10 @@
-infra_apps: []
+infra_apps:
+
+- name: vault
+  disableAutoSync: false
+  project: infra
+  destinationNamespace: vault
+  source:
+    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
+    targetRevision: main
+    path: apps/vault

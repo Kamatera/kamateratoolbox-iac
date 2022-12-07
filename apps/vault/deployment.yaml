@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  selector:
+    matchLabels:
+      app: vault
+  replicas: 1
+  revisionHistoryLimit: 5
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: vault
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: vault
+          # Pulled Dec 7, 2022
+          image: vault@sha256:403c4cdc39091f58dd804133b8f1f3cc933e1a3929bd64eab50443d4557e3ee8
+          resources: {"requests": {"cpu": "50m", "memory": "100Mi"}, "limits": {"memory": "500Mi"}}
+          args:
+            - server
+          ports:
+            - containerPort: 8200
+          env:
+            - name: VAULT_LOCAL_CONFIG
+              value: '{"backend": {"file": {"path": "/var/vault/file"}}, "listener": {"tcp": {"address": "0.0.0.0:8200", "tls_disable": 1}}, "api_addr": "http://127.0.0.1:8200", "ui": true}'
+          volumeMounts:
+            - name: vaultdata
+              mountPath: /var/vault
+              subPath: vaultdata
+          securityContext:
+            privileged: true
+      volumes:
+        - name: vaultdata
+          persistentVolumeClaim:
+            claimName: vault

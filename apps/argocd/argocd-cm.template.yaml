@@ -13,4 +13,4 @@ data:
         command: ["argocd_iac_plugin.py", "init", "."]
       generate:
         command: ["sh", "-c"]
-        args: ['argocd_iac_plugin.py generate . "$ARGOCD_APP_NAME" "$ARGOCD_APP_NAMESPACE" ${{ARGOCD_ENV_helm_args}}']
+        args: ['argocd_iac_plugin.py generate . "$ARGOCD_APP_NAME" "$ARGOCD_APP_NAMESPACE" ${ARGOCD_ENV_helm_args}']

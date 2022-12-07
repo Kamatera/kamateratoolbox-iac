@@ -9,6 +9,7 @@ Infrastructure as Code for Kamatera CloudCLI and 3rd party APIs and tools.
 * [Docker](https://docs.docker.com/get-docker/)
 * [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [Helm](https://helm.sh/docs/intro/install/)
+* [Vault CLI](https://www.vaultproject.io/docs/install)
 
 ## Login
 
@@ -18,14 +19,21 @@ Set secrets in env vars:
 # Kamatera admin credentials
 export KAMATERA_API_CLIENT_ID=
 export KAMATERA_API_SECRET=
+
 # Rancher admin credentials
 export RANCHER_ACCESS_KEY=
 export RANCHER_SECRET_KEY=
+
 # lower level access key for node management, you can get it from the Rancher default node templates
 export KAMATERA_NODE_MANAGEMENT_API_CLIENT_ID=
 export KAMATERA_NODE_MANAGEMENT_API_SECRET=
+
 # cloudflare restricted token with Zone:DNS:Edit permissions for relevant domain
 export CLOUDFLARE_API_TOKEN=
+
+# vault admin token
+export VAULT_ADDR=
+export VAULT_TOKEN=
 ```
 
 ## Usage

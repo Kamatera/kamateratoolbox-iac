@@ -1,0 +1,13 @@
+projects:
+
+  - name: infra
+    spec:
+      clusterResourceWhitelist:
+        - group: '*'
+          kind: '*'
+      destinations:
+        - name: '*'
+          namespace: vault
+          server: 'https://kubernetes.default.svc'
+      sourceRepos:
+        - https://github.com/Kamatera/kamateratoolbox-iac.git

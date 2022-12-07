@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - install.yaml
+- argocd-apps.yaml
 
 patchesStrategicMerge:
 - patch-argocd-server-deployment.yaml

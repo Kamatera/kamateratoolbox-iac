@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-apps
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: argocd
+    server: 'https://kubernetes.default.svc'
+  source:
+    repoURL: 'https://github.com/Kamatera/kamateratoolbox-iac.git'
+    targetRevision: main
+    path: apps/argocd-apps
+    helm:
+      valueFiles:
+        - values-infra-apps.yaml
+        - values-projects.yaml
+        - values-apps.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

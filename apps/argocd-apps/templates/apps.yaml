@@ -1,0 +1,28 @@
+{{ range (concat .Values.apps .Values.infra_apps) }}
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .name | quote }}
+  namespace: argocd
+spec:
+  destination:
+    namespace: {{ if .destinationNamespace }}{{ .destinationNamespace | quote }}{{ else }}{{ .name | quote }}{{ end }}
+    {{ if .destinationClusterName }}
+    name: {{ .destinationClusterName | quote }}
+    {{ else }}
+    server: 'https://kubernetes.default.svc'
+    {{ end }}
+  project: {{ if .project }}{{ .project | quote }}{{ else }}{{ .name | quote }}{{ end }}
+  source: {{ toYaml .source | nindent 4 }}
+  syncPolicy:
+    {{ if not $.Values.globalDisableAutoSync }}
+    {{ if not .disableAutoSync }}
+    automated:
+      prune: true
+      selfHeal: true
+    {{ end }}
+    {{ end }}
+    syncOptions:
+      - CreateNamespace=true
+---
+{{ end }}

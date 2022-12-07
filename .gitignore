@@ -1,0 +1,6 @@
+.terraform/
+.idea/
+.data/
+.env
+defaults.terraform.tfvars
+terraform.tfstate*

@@ -9,5 +9,8 @@ projects:
         - name: '*'
           namespace: vault
           server: 'https://kubernetes.default.svc'
+        - name: '*'
+          namespace: terraform
+          server: 'https://kubernetes.default.svc'
       sourceRepos:
         - https://github.com/Kamatera/kamateratoolbox-iac.git

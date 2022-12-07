@@ -10,3 +10,14 @@ infra_apps:
     path: apps/vault
   sourceVaultPluginHelmValueFiles:
   - values.yaml
+
+- name: terraform
+  disableAutoSync: false
+  project: infra
+  destinationNamespace: terraform
+  source:
+    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
+    targetRevision: main
+    path: apps/terraform
+  sourceVaultPluginHelmValueFiles:
+  - values.yaml

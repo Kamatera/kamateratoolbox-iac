@@ -10,5 +10,5 @@ resources:
 # this patch enables automatic unseal
 # it should be applied only after you initialize vault and create a secret called vault-unseal
 # with key UNSEAL_KEYS containing 3 unseal keys separated by spaces
-#patchesStrategicMerge:
-#  - patch-deployment-unseal.yaml
+patchesStrategicMerge:
+  - patch-deployment-unseal.yaml

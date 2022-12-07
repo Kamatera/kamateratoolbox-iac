@@ -13,3 +13,12 @@ resource "null_resource" "deploy_nfs_provisioner" {
     EOF
   }
 }
+
+resource "null_resource" "set_default_storage_class" {
+  depends_on = [null_resource.deploy_nfs_provisioner]
+  provisioner "local-exec" {
+    command = <<-EOF
+      kubectl patch storageclass nfs-client -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+    EOF
+  }
+}

@@ -14,7 +14,12 @@ Usage: bin/terraform_init_apply.py <environment_name> [--from=<module>] [--to=<m
 
 # core modules which will be applied first in this order
 # other modules will be applied after these modules in unspecified order
-CORE_MODULES = []
+CORE_MODULES = [
+    "cloudcli",
+    "dns",
+    "storage",
+    "apps",
+]
 
 
 def parse_args(args):

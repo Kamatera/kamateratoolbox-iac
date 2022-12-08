@@ -21,3 +21,14 @@ infra_apps:
     path: apps/terraform
   sourceVaultPluginHelmValueFiles:
   - values.yaml
+
+- name: certbot
+  disableAutoSync: false
+  project: infra
+  destinationNamespace: certbot
+  source:
+    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
+    targetRevision: main
+    path: apps/certbot
+  sourceVaultPluginHelmValueFiles:
+  - values.yaml

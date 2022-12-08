@@ -16,7 +16,7 @@ AVP_SECRET_ID = os.environ['AVP_SECRET_ID']
 VAULT_ADDR = os.environ['VAULT_ADDR']
 
 
-regex_pattern = re.compile('~([^~]+)~')
+regex_pattern = re.compile('~([^~\s]{1,100})~')
 regex_format = '~{}~'
 
 

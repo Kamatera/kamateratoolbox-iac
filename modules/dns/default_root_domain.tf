@@ -16,6 +16,7 @@ resource "cloudflare_record" "default_sub_domains" {
     "argocd",
     "argocd-grpc",
     "vault",
+    "grafana",
   ])
   zone_id = data.cloudflare_zone.default.id
   name = "cloudcli-${each.value}"

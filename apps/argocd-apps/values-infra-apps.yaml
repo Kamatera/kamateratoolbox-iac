@@ -32,3 +32,26 @@ infra_apps:
     path: apps/certbot
   sourceVaultPluginHelmValueFiles:
   - values.yaml
+
+- name: monitoring-kube-prometheus-crds
+  disableAutoSync: true
+  project: infra
+  destinationNamespace: monitoring
+  source:
+    repoURL: https://github.com/prometheus-community/helm-charts.git
+    path: charts/kube-prometheus-stack/crds/
+    # this version should match version defined in apps/monitoring/Chart.yaml
+    targetRevision: kube-prometheus-stack-39.11.0
+    directory:
+      recurse: true
+
+- name: monitoring
+  disableAutoSync: true
+  project: infra
+  destinationNamespace: monitoring
+  source:
+    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
+    targetRevision: main
+    path: apps/monitoring
+  sourceVaultPluginHelmValueFiles:
+  - values.yaml

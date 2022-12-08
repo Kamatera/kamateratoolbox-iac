@@ -1,0 +1,21 @@
+kube-prometheus-stack:
+
+  grafana:
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      hosts:
+        - cloudcli-grafana.~iac:root_domain~
+    persistence:
+      enabled: true
+
+  prometheus:
+    prometheusSpec:
+      retention: 10d
+      storageSpec:
+        volumeClaimTemplate:
+          spec:
+            accessModes: [ "ReadWriteOnce" ]
+            resources:
+              requests:
+                storage: 100Gi

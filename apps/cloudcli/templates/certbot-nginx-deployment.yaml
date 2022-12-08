@@ -26,7 +26,7 @@ spec:
               memory: 128Mi
           volumeMounts:
             - name: certbot-webroot
-              mountPath: /var/www/html
+              mountPath: /usr/share/nginx/html
       volumes:
         - name: certbot-webroot
           persistentVolumeClaim:

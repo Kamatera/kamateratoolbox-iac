@@ -1,0 +1,36 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: certbot
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      completions: 1
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          serviceAccountName: certbot
+          containers:
+            - name: certbot
+              image: {{ .Values.certbot_image }}
+              command:
+                - bash
+                - -c
+                - |
+                  sleep 86400
+                  certbot_.py "~iac:cloudcli_server_domain~" "~iac:letsencrypt_email~" --renew --html \
+                    --ssl-secret-name=cloudcli-server-tls \
+                    --ssl-secret-namespace=cloudcli
+              env:
+                - name: WEBROOT_PATH
+                  value: /var/www/html
+              volumeMounts:
+                - name: certbot-webroot
+                  mountPath: /var/www/html
+          volumes:
+            - name: certbot-webroot
+              persistentVolumeClaim:
+                claimName: certbot-webroot

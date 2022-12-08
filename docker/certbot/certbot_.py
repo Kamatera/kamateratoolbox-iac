@@ -8,7 +8,15 @@ import subprocess
 from textwrap import dedent
 
 
-def process(root_domain, letsencrypt_email, renew):
+def register_html(domain_name, letsencrypt_email):
+    subprocess.check_call([
+        'certbot', 'certonly', '-d', domain_name,
+        '--webroot', '-w', os.environ['WEBROOT_PATH'],
+        '-m', letsencrypt_email, '--agree-tos', '-n',
+    ])
+
+
+def register_wildcard_dns(root_domain, letsencrypt_email):
     with tempfile.TemporaryDirectory() as tmpdir:
         cloudflare_credentials_ini = os.path.join(tmpdir, 'cloudflare.ini')
         with open(cloudflare_credentials_ini, 'w') as f:
@@ -22,21 +30,27 @@ def process(root_domain, letsencrypt_email, renew):
             '--preferred-challenges', 'dns',
             '-m', letsencrypt_email, '--agree-tos', '-n',
         ])
+
+def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html):
+    if html:
+        register_html(root_domain, letsencrypt_email)
+    else:
+        register_wildcard_dns(root_domain, letsencrypt_email)
     certs_path = f'/etc/letsencrypt/live/{root_domain}'
     if renew:
         subprocess.check_call([
-            'kubectl', '-n', 'ingress-nginx', 'delete', 'secret', 'cloudcli-default-ssl',
+            'kubectl', '-n', secret_namespace, 'delete', 'secret', secret_name,
         ])
     subprocess.check_call([
-        'kubectl', '-n', 'ingress-nginx', 'create', 'secret', 'tls', 'cloudcli-default-ssl',
+        'kubectl', '-n', secret_namespace, 'create', 'secret', 'tls', secret_name,
         '--cert', f'{certs_path}/fullchain.pem',
         '--key', f'{certs_path}/privkey.pem'
     ])
 
 
-def get_certificate_expiry_days():
+def get_certificate_expiry_days(secret_name, secret_namespace):
     p = subprocess.run([
-        "kubectl", "-n", "ingress-nginx", "get", "secret", "cloudcli-default-ssl", "-ojsonpath={.data}"
+        "kubectl", "-n", secret_namespace, "get", "secret", secret_name, "-ojsonpath={.data}"
     ], stdout=subprocess.PIPE)
     if p.returncode == 1:
         return None
@@ -51,7 +65,16 @@ def get_certificate_expiry_days():
 
 def main(root_domain, letsencrypt_email, *args):
     renew = "--renew" in args
-    cert_expiry_days = get_certificate_expiry_days()
+    html = "--html" in args
+    secret_name = "cloudcli-default-ssl"
+    secret_namespace = "ingress-nginx"
+    for arg in args:
+        if arg.startswith("--ssl-secret-name="):
+            secret_name = arg.split("=")[1]
+        elif arg.startswith("--ssl-secret-namespace="):
+            secret_namespace = arg.split("=")[1]
+    print(f'Updating secret {secret_name} in namespace {secret_namespace} for domain {root_domain}')
+    cert_expiry_days = get_certificate_expiry_days(secret_name, secret_namespace)
     if cert_expiry_days is not None:
         if not renew:
             print("ERROR! Secret already exists, will not re-create, certificate renewal is handled from an in-cluster cronjob")
@@ -59,9 +82,9 @@ def main(root_domain, letsencrypt_email, *args):
         if cert_expiry_days > 10:
             print("Certificate is still valid, will not renew")
             exit(0)
-        process(root_domain, letsencrypt_email, renew=True)
+        process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=True, html=html)
     else:
-        process(root_domain, letsencrypt_email, renew=False)
+        process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=False, html=html)
 
 
 if __name__ == '__main__':

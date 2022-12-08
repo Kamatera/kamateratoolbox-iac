@@ -12,6 +12,7 @@ spec:
       template:
         spec:
           restartPolicy: Never
+          serviceAccountName: certbot
           containers:
             - name: certbot
               image: {{ .Values.certbot_image }}

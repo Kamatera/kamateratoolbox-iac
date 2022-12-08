@@ -15,5 +15,8 @@ projects:
         - name: '*'
           namespace: certbot
           server: 'https://kubernetes.default.svc'
+        - name: '*'
+          namespace: ingress-nginx
+          server: 'https://kubernetes.default.svc'
       sourceRepos:
         - https://github.com/Kamatera/kamateratoolbox-iac.git

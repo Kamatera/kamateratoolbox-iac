@@ -11,6 +11,9 @@ from kubernetes import client, config
 
 
 DEBUG = False
+AVP_ROLE_ID = os.environ['AVP_ROLE_ID']
+AVP_SECRET_ID = os.environ['AVP_SECRET_ID']
+VAULT_ADDR = os.environ['VAULT_ADDR']
 
 
 regex_pattern = re.compile('~([^~]+)~')
@@ -64,10 +67,10 @@ def parse_matches(matches):
     return parsed_matches
 
 
-def get_vault_path_data(vault_addr, vault_token, path):
+def get_vault_path_data(vault_token, path):
     path = os.path.join('kv', 'data', path)
     return requests.get(
-        os.path.join(vault_addr, 'v1', path),
+        os.path.join(VAULT_ADDR, 'v1', path),
         headers={'X-Vault-Token': vault_token}
     ).json()['data']['data']
 
@@ -77,21 +80,15 @@ def get_iac_data():
     return configmap.data
 
 
-def get_vault_creds():
-    secret = coreV1Api.read_namespaced_secret('argocd-vault-plugin-credentials', 'argocd')
-    data = {k: base64.b64decode(v).decode() for k, v in secret.data.items()}
-    role_id = data['AVP_ROLE_ID']
-    secret_id = data['AVP_SECRET_ID']
-    vault_addr = data['VAULT_ADDR']
-    vault_token = requests.post(
-        f'{vault_addr}/v1/auth/approle/login',
-        json={'role_id': role_id, 'secret_id': secret_id}
+def get_vault_token():
+    return requests.post(
+        f'{VAULT_ADDR}/v1/auth/approle/login',
+        json={'role_id': AVP_ROLE_ID, 'secret_id': AVP_SECRET_ID}
     ).json()['auth']['client_token']
-    return vault_addr, vault_token
 
 
 def get_match_values(parsed_matches):
-    vault_addr, vault_token = get_vault_creds()
+    vault_token = get_vault_token()
     match_values = {}
     iac_data = None
     vault_paths_data = {}
@@ -102,7 +99,7 @@ def get_match_values(parsed_matches):
             match_values[match] = iac_data.get(parsed_match['key'], '')
         elif parsed_match['type'] == 'vault':
             if parsed_match['path'] not in vault_paths_data:
-                vault_paths_data[parsed_match['path']] = get_vault_path_data(vault_addr, vault_token, parsed_match['path'])
+                vault_paths_data[parsed_match['path']] = get_vault_path_data(vault_token, parsed_match['path'])
             val = vault_paths_data[parsed_match['path']].get(parsed_match['key'], '')
             if not parsed_match['output_raw']:
                 val = base64.b64encode(val.encode()).decode()

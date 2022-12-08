@@ -17,16 +17,18 @@ spec:
     spec:
       terminationGracePeriodSeconds: 10
       initContainers:
-        - name: init-ssl
+        - name: init
           # pulled Sep 18, 2022
           image: alpine@sha256:bc41182d7ef5ffc53a40b044e725193bc10142a1243f395ee852a8d9730fc2ad
           command:
             - sh
             - -c
             - |
+              sleep 86400
               cp /opt/ssl/server.* /opt/secured_ssl/ &&\
               chmod 600 /opt/secured_ssl/server.* &&\
               chown 999:999 /opt/secured_ssl/* &&\
+              chown -R 999:999 /var/lib/postgresql/data &&\
               if [ -e /var/lib/postgresql/data/pg_hba.conf ]; then
                 if ! cat /var/lib/postgresql/data/pg_hba.conf | grep "^hostnossl"; then
                   sed -i '1i hostnossl all all 0.0.0.0/0 reject' /var/lib/postgresql/data/pg_hba.conf

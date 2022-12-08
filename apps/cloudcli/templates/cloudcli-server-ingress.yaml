@@ -4,6 +4,10 @@ metadata:
   name: cloudcli-server
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - "~iac:cloudcli_server_domain~"
+      secretName: cloudcli-server-tls
   rules:
     - host: "~iac:cloudcli_server_domain~"
       http:

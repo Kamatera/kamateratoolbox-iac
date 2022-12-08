@@ -20,7 +20,6 @@ spec:
                 - bash
                 - -c
                 - |
-                  sleep 86400
                   certbot_.py "~iac:cloudcli_server_domain~" "~iac:letsencrypt_email~" --renew --html \
                     --ssl-secret-name=cloudcli-server-tls \
                     --ssl-secret-namespace=cloudcli

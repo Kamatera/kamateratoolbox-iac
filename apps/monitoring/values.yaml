@@ -61,3 +61,12 @@ kube-prometheus-stack:
           action: replace
           targetLabel: cluster
           replacement: cloudcli
+
+  kube-state-metrics:
+    prometheus:
+      monitor:
+        relabelings:
+          - sourceLabels: [ __metrics_path__ ]
+            action: replace
+            targetLabel: cluster
+            replacement: cloudcli

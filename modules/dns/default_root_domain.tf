@@ -23,3 +23,11 @@ resource "cloudflare_record" "default_sub_domains" {
   value = "cloudcli-default-ingress.${var.defaults.root_domain}"
   proxied = false
 }
+
+resource "cloudflare_record" "cloudcli" {
+  zone_id = data.cloudflare_zone.default.id
+  name = "cloudcli"
+  type = "CNAME"
+  value = "cloudcli-default-ingress.${var.defaults.root_domain}"
+  proxied = false
+}

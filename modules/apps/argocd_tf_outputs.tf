@@ -23,5 +23,6 @@ resource "kubernetes_config_map_v1_data" "tf_outputs" {
   data = {
     root_domain = var.defaults.root_domain
     letsencrypt_email = var.defaults.letsencrypt_email
+    cloudcli_server_domain = "cloudcli.${var.defaults.root_domain}"
   }
 }

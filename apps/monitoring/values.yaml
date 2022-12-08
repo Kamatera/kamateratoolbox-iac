@@ -1,3 +1,8 @@
+secrets:
+- name: prometheus-httpauth
+  data:
+    "~vault_raw:iac/apps/httpauth/prometheus:username~": "~vault:iac/apps/httpauth/prometheus:httpauth_password~"
+
 kube-prometheus-stack:
 
   grafana:

@@ -52,8 +52,12 @@ kube-prometheus-stack:
         - sourceLabels: [ id, pod ]
           action: drop
           regex: '.+;'
-        # Add missing image label to container metrics.
+        # Add missing image and cluster labels to container metrics.
         - sourceLabels: [ __name__ ]
           action: replace
           targetLabel: image
           replacement: "-"
+        - sourceLabels: [ __name__ ]
+          action: replace
+          targetLabel: cluster
+          replacement: cloudcli

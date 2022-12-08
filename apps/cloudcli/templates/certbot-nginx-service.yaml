@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: certbot-nginx
+spec:
+  selector:
+    app: certbot-nginx
+  ports:
+  - name: "80"
+    port: 80

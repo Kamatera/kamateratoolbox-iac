@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: certbot-nginx
+spec:
+  selector:
+    matchLabels:
+      app: certbot-nginx
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: certbot-nginx
+    spec:
+      terminationGracePeriodSeconds: 2
+      containers:
+        - name: nginx
+          # Pulled Dec 8, 2022
+          image: nginx@sha256:ab589a3c466e347b1c0573be23356676df90cd7ce2dbf6ec332a5f0a8b5e59db
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - name: certbot-webroot
+              mountPath: /var/www/html
+      volumes:
+        - name: certbot-webroot
+          persistentVolumeClaim:
+            claimName: certbot-webroot

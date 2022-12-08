@@ -20,3 +20,15 @@ projects:
           server: 'https://kubernetes.default.svc'
       sourceRepos:
         - https://github.com/Kamatera/kamateratoolbox-iac.git
+
+  - name: cloudcli
+    spec:
+      clusterResourceWhitelist:
+        - group: '*'
+          kind: '*'
+      destinations:
+        - name: '*'
+          namespace: cloudcli
+          server: 'https://kubernetes.default.svc'
+      sourceRepos:
+        - https://github.com/Kamatera/kamateratoolbox-iac.git

@@ -1,0 +1,2 @@
+replicas: 2
+image: kamatera/cloudcli-server:ce74ad8a1dbd13f5dc101a82cf226afa65195701

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudcli-server
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: cloudcli-server
+  template:
+    metadata:
+      labels:
+        app: cloudcli-server
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: cloudcli-server
+        image: {{ .Values.image }}
+        env:
+        - name: CLOUDCLI_API_SERVER
+          value: https://console.kamatera.com
+        - name: CLOUDCLI_PROVIDER
+          value: proxy
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 1024Mi
+          limits:
+            cpu: 2000m
+            memory: 2148Mi

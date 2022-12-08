@@ -6,13 +6,19 @@ import subprocess
 from textwrap import dedent
 
 
-def main(root_domain, letsencrypt_email):
+def main(root_domain, letsencrypt_email, *args):
+    renew = "--renew" in args
     if subprocess.call([
         'kubectl', '-n', 'ingress-nginx', 'get', 'secret', 'cloudcli-default-ssl'
     ]) == 0:
-        print("ERROR! Secret already exists, will not re-create, certificate renewal is not supported yet")
-        exit(1)
+        if not renew:
+            print("ERROR! Secret already exists, will not re-create, certificate renewal is handled from an in-cluster cronjob")
+            exit(1)
+        raise NotImplementedError("Certificate renewal is not supported yet")
     else:
+        if renew:
+            print("ERROR! Secret does not exist, you need to handle initial registration first")
+            exit(1)
         with tempfile.TemporaryDirectory() as tmpdir:
             cloudflare_credentials_ini = os.path.join(tmpdir, 'cloudflare.ini')
             with open(cloudflare_credentials_ini, 'w') as f:

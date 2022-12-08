@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: certbot
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      completions: 1
+      backoffLimit: 0
+      template:
+        spec:
+          serviceAccountName: certbot
+          restartPolicy: Never
+          containers:
+            - name: certbot
+              image: {{ .Values.certbot_image }}
+              command:
+                - bash
+                - -c
+                - |
+                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew
+              env:
+                - name: CLOUDFLARE_API_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: cloudflare
+                      key: api_token

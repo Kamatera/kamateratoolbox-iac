@@ -1,4 +1,6 @@
-terraform {}
+terraform {
+  backend "pg" {}
+}
 
 module "apps" {
   source = "../../../modules/apps"
@@ -10,9 +12,12 @@ output "apps" {
   value = module.apps.apps
 }
 
+variable "backend_config_conn_str" {}
+
 data "terraform_remote_state" "cloudcli" {
-  backend = "local"
+  backend = "pg"
   config = {
-    path = "${path.cwd}/environments/main/cloudcli/terraform.tfstate"
+    conn_str = var.backend_config_conn_str
+    schema_name = "main_cloudcli"
   }
 }

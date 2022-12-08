@@ -34,6 +34,9 @@ export CLOUDFLARE_API_TOKEN=
 # vault admin token
 export VAULT_ADDR=
 export VAULT_TOKEN=
+
+# terraform state DB connection string
+export STATE_DB_CONN_STRING=postgres://user:pass@db.example.com/terraform_backend
 ```
 
 ## Usage

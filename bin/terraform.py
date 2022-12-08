@@ -4,6 +4,9 @@ import sys
 import subprocess
 
 
+STATE_DB_CONN_STRING = os.environ.get('STATE_DB_CONN_STRING')
+
+
 HELP = '''
 Run terraform commands in the specified environment and path.
 
@@ -15,14 +18,22 @@ def get_init_args(environment_name, path, path_id, no_backend_config, *args):
     # here you will usually add -backend-config=KEY=VALUE arguments to be initialized
     # if no_backend_config is True, then the backend config arguments should not be added to allow
     # first time initialization of the backend locally
+    if STATE_DB_CONN_STRING and not no_backend_config:
+        args = [
+            f"-backend-config=conn_str={STATE_DB_CONN_STRING}",
+            f"-backend-config=schema_name={'.'.join(path_id.split('.')[1:]).replace('.', '_')}",
+            *args,
+        ]
     return [*args]
 
 
 def get_apply_args(environment_name, path, path_id, command, *args):
     # here you will usually add -var=KEY=VALUE arguments to the plan related commands like
     #   'plan', 'apply', 'destroy', 'refresh'
+    if STATE_DB_CONN_STRING:
+        args = [f'-var=backend_config_conn_str={STATE_DB_CONN_STRING}', *args]
     if path_id.split('.')[2:] == ['dns']:
-        args = [*args, f'-var=cloudflare_api_token={os.environ["CLOUDFLARE_API_TOKEN"]}']
+        args = [f'-var=cloudflare_api_token={os.environ["CLOUDFLARE_API_TOKEN"]}', *args]
     return ['-var-file=../defaults.terraform.tfvars', *args]
 
 

@@ -9,7 +9,7 @@ resource "rancher2_cluster" "cloudcli" {
     ingress {
       default_backend = true
       extra_args = {
-        "default-ssl-certificate" = "ingress-nginx/cloudcli-default-ssl"
+        "default-ssl-certificate" = "ingress-nginx/cloudcli-default-ssl",
       }
     }
   }

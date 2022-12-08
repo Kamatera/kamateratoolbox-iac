@@ -1,4 +1,6 @@
-terraform {}
+terraform {
+  backend "pg" {}
+}
 
 module "cloudcli" {
   source = "../../../modules/cloudcli"
@@ -13,3 +15,5 @@ output "kubeconfig" {
   value = module.cloudcli.kubeconfig
   sensitive = true
 }
+
+variable "backend_config_conn_str" {}

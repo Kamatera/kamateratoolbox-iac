@@ -18,6 +18,7 @@ resource "cloudflare_record" "default_sub_domains" {
     "vault",
     "grafana",
     "prometheus",
+    "alertmanager",
   ])
   zone_id = data.cloudflare_zone.default.id
   name = "cloudcli-${each.value}"

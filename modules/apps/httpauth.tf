@@ -1,6 +1,7 @@
 resource "null_resource" "httpauth" {
   for_each = toset([
-    "prometheus"
+    "prometheus",
+    "alertmanager"
   ])
   triggers = {
     command = <<-EOF

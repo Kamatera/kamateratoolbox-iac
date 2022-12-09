@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: cloudcli-server
 spec:
-  replicas: {{ .Values.replicas }}
+  replicas: {{ .Values.minReplicas }}
   selector:
     matchLabels:
       app: cloudcli-server

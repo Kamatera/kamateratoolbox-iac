@@ -51,8 +51,8 @@ def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew
         with open(os.path.join(certs_path, 'privkey.pem'), 'r') as f:
             key = f.read()
         if (
-            data['tls.crt'].strip() == base64.b64encode(cert.strip().encode()).decode().strip()
-            and data['tls.key'].strip() == base64.b64encode(key.strip().encode()).decode().strip()
+            base64.b64decode(data['tls.crt'].encode()).decode().strip() == cert.strip()
+            and base64.b64decode(data['tls.key'].encode()).decode().strip() == key.strip()
         ):
             print("No change to secret")
             return

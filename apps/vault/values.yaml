@@ -1,4 +1,4 @@
 # this should be enabled only after you initialize vault and create a secret called vault-unseal
 # with key UNSEAL_KEYS containing 3 unseal keys separated by spaces
-enableAutoUnseal: false
+enableAutoUnseal: true
 domain: "cloudcli-vault.~iac:root_domain~"

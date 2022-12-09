@@ -20,3 +20,7 @@ resource "rancher2_cluster" "cloudcli" {
     }
   }
 }
+
+locals {
+  nodes_startup_script = "${trimspace(var.defaults.nodes_startup_script)} &&\\\n ${trimspace(rancher2_cluster.cloudcli.cluster_registration_token[0].node_command)}"
+}

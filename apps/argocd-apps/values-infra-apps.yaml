@@ -66,3 +66,12 @@ infra_apps:
       name: monitoring-kube-prometheus-admission
       jsonPointers:
           - /webhooks/0/failurePolicy
+
+- name: cluster-autoscaler
+  disableAutoSync: true
+  project: infra
+  destinationNamespace: kube-system
+  source:
+    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
+    targetRevision: main
+    path: apps/cluster-autoscaler

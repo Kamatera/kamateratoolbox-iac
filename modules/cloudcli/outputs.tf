@@ -7,6 +7,7 @@ output "cloudcli" {
       kamatera_server.workers[1].public_ips[0],
       kamatera_server.workers[2].public_ips[0],
     ]
+    nodes_startup_script = local.nodes_startup_script
   }
 }
 

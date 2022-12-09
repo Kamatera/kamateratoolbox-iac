@@ -24,6 +24,14 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 100Gi
+      volumes:
+        - name: etcd-certs
+          secret:
+              secretName: etcd-certs
+      volumeMounts:
+        - name: etcd-certs
+          mountPath: /etc/etcd-certs
+          readOnly: true
 
   prometheus-node-exporter:
     priorityClassName: system-node-critical
@@ -34,3 +42,12 @@ kube-prometheus-stack:
         operator: Exists
       - operator: Exists
         effect: NoExecute
+
+  kubeEtcd:
+    endpoints:
+      - 5.180.182.209
+    serviceMonitor:
+      scheme: https
+      caFile: /etc/etcd-certs/cacert
+      certFile: /etc/etcd-certs/cert
+      keyFile: /etc/etcd-certs/key

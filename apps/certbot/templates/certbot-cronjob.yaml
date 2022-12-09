@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: certbot
 spec:
-  schedule: "0 0 * * *"
+  schedule: "0 0,12 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:

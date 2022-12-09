@@ -16,6 +16,7 @@ resource "kamatera_server" "nfs" {
   billing_cycle = "monthly"
   image_id = data.kamatera_image.nfsserver.id
   ssh_pubkey = var.defaults.ssh_pubkey
+  daily_backup = true
   network {
     name = "wan"
   }

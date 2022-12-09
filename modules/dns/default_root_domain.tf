@@ -34,3 +34,11 @@ resource "cloudflare_record" "cloudcli" {
   value = "cloudcli-default-ingress.${var.defaults.root_domain}"
   proxied = false
 }
+
+resource "cloudflare_record" "rancher" {
+  zone_id = data.cloudflare_zone.default.id
+  name = "cloudcli-rancher"
+  type = "A"
+  value = local.cloudcli.rancher_server_ip
+  proxied = false
+}

@@ -1,5 +1,6 @@
 output "cloudcli" {
   value = {
+    "rancher_server_ip" = kamatera_server.rancher.public_ips[0]
     "rancher_url" = local.rancher_url
     "controlplane_ip" = kamatera_server.controlplane.public_ips[0]
     "worker_ips" = [

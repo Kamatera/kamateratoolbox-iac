@@ -58,3 +58,11 @@ kube-prometheus-stack:
   kubeControllerManager:
     endpoints:
       - 5.180.182.209
+
+  kubeProxy:
+    endpoints:
+      - 5.180.182.209
+
+  kubeScheduler:
+    endpoints:
+      - 5.180.182.209

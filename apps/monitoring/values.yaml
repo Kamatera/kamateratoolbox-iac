@@ -54,3 +54,7 @@ kube-prometheus-stack:
       caFile: /etc/etcd-certs/cacert
       certFile: /etc/etcd-certs/cert
       keyFile: /etc/etcd-certs/key
+
+  kubeControllerManager:
+    endpoints:
+      - 5.180.182.209

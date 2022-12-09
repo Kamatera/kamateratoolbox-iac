@@ -3,6 +3,8 @@ import re
 import os
 import sys
 import base64
+import traceback
+
 import urllib3
 import subprocess
 
@@ -11,9 +13,9 @@ from kubernetes import client, config
 
 
 DEBUG = False
-AVP_ROLE_ID = os.environ['AVP_ROLE_ID']
-AVP_SECRET_ID = os.environ['AVP_SECRET_ID']
-VAULT_ADDR = os.environ['VAULT_ADDR']
+AVP_ROLE_ID = os.environ.get('AVP_ROLE_ID')
+AVP_SECRET_ID = os.environ.get('AVP_SECRET_ID')
+VAULT_ADDR = os.environ.get('VAULT_ADDR')
 
 
 regex_pattern = re.compile('~([^~\s]{1,100})~')
@@ -81,10 +83,14 @@ def get_iac_data():
 
 
 def get_vault_token():
-    return requests.post(
-        f'{VAULT_ADDR}/v1/auth/approle/login',
-        json={'role_id': AVP_ROLE_ID, 'secret_id': AVP_SECRET_ID}
-    ).json()['auth']['client_token']
+    try:
+        return requests.post(
+            f'{VAULT_ADDR}/v1/auth/approle/login',
+            json={'role_id': AVP_ROLE_ID, 'secret_id': AVP_SECRET_ID}
+        ).json()['auth']['client_token']
+    except:
+        debug_log(traceback.format_exc())
+        return None
 
 
 def get_match_values(parsed_matches):

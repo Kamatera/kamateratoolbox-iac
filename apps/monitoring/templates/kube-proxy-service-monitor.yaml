@@ -13,7 +13,7 @@ spec:
   endpoints:
   - port: http-metrics
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-  relabelings:
-    - sourceLabels: [__metrics_path__]
-      targetLabel: cluster
-      replacement: cloudcli
+    relabelings:
+      - sourceLabels: [__metrics_path__]
+        targetLabel: cluster
+        replacement: cloudcli

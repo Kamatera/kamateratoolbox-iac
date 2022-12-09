@@ -1,7 +1,7 @@
 infra_apps:
 
 - name: vault
-  disableAutoSync: false
+  disableAutoSync: true
   project: infra
   destinationNamespace: vault
   source:
@@ -12,7 +12,7 @@ infra_apps:
   - values.yaml
 
 - name: terraform
-  disableAutoSync: false
+  disableAutoSync: true
   project: infra
   destinationNamespace: terraform
   source:
@@ -23,7 +23,7 @@ infra_apps:
   - values.yaml
 
 - name: certbot
-  disableAutoSync: false
+  disableAutoSync: true
   project: infra
   destinationNamespace: certbot
   source:

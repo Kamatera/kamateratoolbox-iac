@@ -20,8 +20,7 @@ spec:
                 - bash
                 - -c
                 - |
-                  sleep 86400
-#                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew
+                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew
               env:
                 - name: CLOUDFLARE_API_TOKEN
                   valueFrom:

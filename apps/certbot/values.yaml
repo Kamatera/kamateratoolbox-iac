@@ -1,5 +1,5 @@
 # Build from docker/certbot on Dec 8, 2022
-certbot_image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:70aa4f598cddb97906f3d9d48e979b0b3d249330
+certbot_image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:d2b82aa99f91f400a2f19ce7093b19fc7458f21c
 root_domain: "~iac:root_domain~"
 letsencrypt_email: "~iac:letsencrypt_email~"
 

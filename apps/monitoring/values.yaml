@@ -24,3 +24,13 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 100Gi
+
+  prometheus-node-exporter:
+    priorityClassName: system-node-critical
+    tolerations:
+      - operator: Exists
+        effect: NoSchedule
+      - key: CriticalAddonsOnly
+        operator: Exists
+      - operator: Exists
+        effect: NoExecute

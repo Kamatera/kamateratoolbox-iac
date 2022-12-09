@@ -5,6 +5,10 @@ secrets:
 - name: alertmanager-httpauth
   data:
     "~vault_raw:iac/apps/httpauth/alertmanager:username~": "~vault:iac/apps/httpauth/alertmanager:httpauth_password~"
+- name: smtp
+  data:
+    user: "~vault:iac/sendgrid:user~"
+    password: "~vault:iac/sendgrid:password~"
 
 kube-prometheus-stack:
 
@@ -19,6 +23,28 @@ kube-prometheus-stack:
     serviceMonitor:
       labels:
         release: monitoring
+    grafana.ini:
+      paths:
+        data: /var/lib/grafana/
+        logs: /var/log/grafana
+        plugins: /var/lib/grafana/plugins
+        provisioning: /etc/grafana/provisioning
+      analytics:
+        check_for_updates: true
+      log:
+        mode: console
+      grafana_net:
+        url: https://grafana.net
+      server:
+        root_url: https://cloudcli-grafana.~iac:root_domain~
+      smtp:
+        enabled: true
+        host: smtp.sendgrid.net:587
+        from_address: ~vault_raw:iac/sendgrid:from_address~
+    smtp:
+      existingSecret: "smtp"
+      userKey: "user"
+      passwordKey: "password"
 
   prometheus:
     prometheusSpec:

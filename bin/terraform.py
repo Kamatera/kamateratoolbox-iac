@@ -68,7 +68,7 @@ def main(environment_name, path, command, *args):
             'terraform', f'-chdir={path}', 'init',
             *get_init_args(environment_name, path, path_id, no_backend_config, *args)
         ])
-    elif command in ['plan', 'apply', 'destroy', 'refresh']:
+    elif command in ['plan', 'apply', 'destroy', 'refresh', 'import']:
         check_call([
             'terraform', f'-chdir={path}', command,
             *get_apply_args(environment_name, path, path_id, command, *args)

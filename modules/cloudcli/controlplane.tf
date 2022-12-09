@@ -1,5 +1,5 @@
 resource "kamatera_server" "controlplane" {
-  name = "cloudcli-controlplane3"
+  name = "cloudcli-controlplane4"
   datacenter_id = var.defaults.datacenter_id
   cpu_type = "B"
   cpu_cores = 4

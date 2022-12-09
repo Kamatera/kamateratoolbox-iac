@@ -4,6 +4,9 @@ data "kamatera_image" "nfsserver" {
 }
 
 resource "kamatera_server" "nfs" {
+  lifecycle {
+    ignore_changes = all
+  }
   name = "cloudcli-nfs"
   datacenter_id = var.defaults.datacenter_id
   cpu_type = "B"
@@ -21,20 +24,21 @@ resource "kamatera_server" "nfs" {
   }
 }
 
-resource "null_resource" "nfs_no_root_squash" {
-  depends_on = [kamatera_server.nfs]
-  provisioner "remote-exec" {
-    connection {
-      host = kamatera_server.nfs.public_ips[0]
-      user = "root"
-      password = kamatera_server.nfs.generated_password
-    }
-    inline = [
-      "sed -i 's/no_subtree_check)/no_subtree_check,no_root_squash)/' /etc/exports",
-      "systemctl restart nfs-kernel-server"
-    ]
-  }
-  lifecycle {
-    ignore_changes = all
-  }
-}
+# this was done manually
+#resource "null_resource" "nfs_no_root_squash" {
+#  depends_on = [kamatera_server.nfs]
+#  provisioner "remote-exec" {
+#    connection {
+#      host = kamatera_server.nfs.public_ips[0]
+#      user = "root"
+#      password = kamatera_server.nfs.generated_password
+#    }
+#    inline = [
+#      "sed -i 's/no_subtree_check)/no_subtree_check,no_root_squash)/' /etc/exports",
+#      "systemctl restart nfs-kernel-server"
+#    ]
+#  }
+#  lifecycle {
+#    ignore_changes = all
+#  }
+#}

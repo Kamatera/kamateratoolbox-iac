@@ -8,7 +8,7 @@ def getpwd():
     return subprocess.check_output(['pwd']).decode().strip()
 
 
-def main(root_domain, letsencrypt_email):
+def main(*args):
     pwd = getpwd()
     subprocess.check_call([
         'docker', 'build', '-t', 'certbot', os.path.join(os.path.dirname(__file__), '../../../docker/certbot')
@@ -20,7 +20,7 @@ def main(root_domain, letsencrypt_email):
         '-v', f'{os.environ["HOME"]}/.kube:/root/.kube',
         '-e', 'CLOUDFLARE_API_TOKEN',
         '--entrypoint', 'certbot_.py',
-        'certbot', root_domain, letsencrypt_email
+        'certbot', *args
     ]
     subprocess.check_call(cmd)
 

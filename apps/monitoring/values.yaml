@@ -24,26 +24,3 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 100Gi
-
-  kubelet:
-    serviceMonitor:
-      cAdvisorRelabelings:
-        - sourceLabels: [ __metrics_path__ ]
-          targetLabel: metrics_path
-        - sourceLabels: [ __metrics_path__ ]
-          targetLabel: container
-          replacement: "-"
-        - sourceLabels: [ __metrics_path__ ]
-          targetLabel: image
-          replacement: "-"
-        - sourceLabels: [ __metrics_path__ ]
-          targetLabel: cluster
-          replacement: cloudcli
-
-  kube-state-metrics:
-    prometheus:
-      monitor:
-        relabelings:
-          - sourceLabels: [ __metrics_path__ ]
-            targetLabel: cluster
-            replacement: cloudcli

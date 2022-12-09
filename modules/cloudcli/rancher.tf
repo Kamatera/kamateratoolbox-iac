@@ -5,6 +5,9 @@ data "kamatera_image" "ubuntu" {
 }
 
 resource "kamatera_server" "rancher" {
+  lifecycle {
+    ignore_changes = all
+  }
   name = "cloudcli-rancher"
   datacenter_id = var.defaults.datacenter_id
   cpu_type = "B"

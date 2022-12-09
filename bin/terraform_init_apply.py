@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-import os
-import subprocess
 import sys
-import glob
+import json
+import subprocess
 
 
 HELP = '''
@@ -10,16 +9,6 @@ Iterate over all the environment modules and run terraform init and apply for ea
 
 Usage: bin/terraform_init_apply.py <environment_name> [--from=<module>] [--to=<module>] [--plan] [--dry-run] [--only-init] [--help] [apply_args..]
 '''.strip()
-
-
-# core modules which will be applied first in this order
-# other modules will be applied after these modules in unspecified order
-CORE_MODULES = [
-    "cloudcli",
-    "dns",
-    "storage",
-    "apps",
-]
 
 
 def parse_args(args):
@@ -42,14 +31,6 @@ def parse_args(args):
     return apply_args, from_module, to_module, dry_run, show_help, only_init, plan
 
 
-def get_environment_modules(environment_name):
-    environment_modules = set()
-    for dirname in glob.glob(f'./environments/{environment_name}/*'):
-        if os.path.isdir(dirname):
-            environment_modules.add(dirname.split('/')[-1])
-    return environment_modules
-
-
 def process_module(environment_name, module, apply_args, dry_run, only_init, plan):
     plan_apply = "plan" if plan else "apply"
     what = 'init' if only_init else f'init and {plan_apply}'
@@ -69,11 +50,8 @@ def main(environment_name, *args):
     if show_help:
         print(HELP)
         exit(1)
-    environment_modules = get_environment_modules(environment_name)
     got_from_module = from_module is None
-    for module in [*CORE_MODULES, *environment_modules.difference(CORE_MODULES)]:
-        if module not in environment_modules:
-            continue
+    for module in json.loads(subprocess.check_output(["bin/terraform_env_modules.py", environment_name])):
         if module == from_module:
             got_from_module = True
         if not got_from_module:

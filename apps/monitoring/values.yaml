@@ -13,6 +13,9 @@ kube-prometheus-stack:
         - cloudcli-grafana.~iac:root_domain~
     persistence:
       enabled: true
+    serviceMonitor:
+      labels:
+        release: monitoring
 
   prometheus:
     prometheusSpec:

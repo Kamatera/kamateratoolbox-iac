@@ -2,6 +2,9 @@ secrets:
 - name: prometheus-httpauth
   data:
     "~vault_raw:iac/apps/httpauth/prometheus:username~": "~vault:iac/apps/httpauth/prometheus:httpauth_password~"
+- name: alertmanager-httpauth
+  data:
+    "~vault_raw:iac/apps/httpauth/alertmanager:username~": "~vault:iac/apps/httpauth/alertmanager:httpauth_password~"
 
 kube-prometheus-stack:
 

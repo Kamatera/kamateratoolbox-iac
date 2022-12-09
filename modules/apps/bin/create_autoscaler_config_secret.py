@@ -7,16 +7,16 @@ import subprocess
 from textwrap import dedent
 
 
-KAMATERA_NODE_MANAGEMENT_API_CLIENT_ID = os.environ['KAMATERA_NODE_MANAGEMENT_API_CLIENT_ID']
-KAMATERA_NODE_MANAGEMENT_API_SECRET = os.environ['KAMATERA_NODE_MANAGEMENT_API_SECRET']
+KAMATERA_AUTOSCALER_API_CLIENT_ID = os.environ['KAMATERA_AUTOSCALER_API_CLIENT_ID']
+KAMATERA_AUTOSCALER_API_SECRET = os.environ['KAMATERA_AUTOSCALER_API_SECRET']
 
 
 def get_configuration(datacenter_id, image_id, private_network, cpu, ram, disk_size, startup_script_base64, ssh_pubkey):
     # see https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/kamatera/README.md#configuration
     return dedent(f"""
         [global]
-        kamatera-api-client-id={KAMATERA_NODE_MANAGEMENT_API_CLIENT_ID.strip()}
-        kamatera-api-secret={KAMATERA_NODE_MANAGEMENT_API_SECRET.strip()}
+        kamatera-api-client-id={KAMATERA_AUTOSCALER_API_CLIENT_ID.strip()}
+        kamatera-api-secret={KAMATERA_AUTOSCALER_API_SECRET.strip()}
         cluster-name=cloudcli
         
         [nodegroup "ng1"]

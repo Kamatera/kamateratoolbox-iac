@@ -37,6 +37,10 @@ export VAULT_TOKEN=
 
 # terraform state DB connection string
 export STATE_DB_CONN_STRING=postgres://user:pass@db.example.com/terraform_backend
+
+# access key for the autoscaler, this has to be a full access key
+export KAMATERA_AUTOSCALER_API_CLIENT_ID=
+export KAMATERA_AUTOSCALER_API_SECRET=
 ```
 
 ## Usage

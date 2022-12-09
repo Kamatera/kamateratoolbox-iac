@@ -48,7 +48,7 @@ kube-prometheus-stack:
 
   kubeEtcd:
     endpoints:
-      - 5.180.182.209
+      - ~iac:controlplane_public_ip~
     serviceMonitor:
       scheme: https
       caFile: /etc/etcd-certs/cacert
@@ -57,12 +57,12 @@ kube-prometheus-stack:
 
   kubeControllerManager:
     endpoints:
-      - 5.180.182.209
+      - ~iac:controlplane_public_ip~
 
   kubeProxy:
     endpoints:
-      - 5.180.182.209
+      - ~iac:controlplane_public_ip~
 
   kubeScheduler:
     endpoints:
-      - 5.180.182.209
+      - ~iac:controlplane_public_ip~

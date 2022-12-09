@@ -55,3 +55,14 @@ infra_apps:
     path: apps/monitoring
   sourceVaultPluginHelmValueFiles:
   - values.yaml
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      name: monitoring-kube-prometheus-admission
+      jsonPointers:
+          - /webhooks/0/failurePolicy
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: monitoring-kube-prometheus-admission
+      jsonPointers:
+          - /webhooks/0/failurePolicy

@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kube-proxy
+  labels:
+    release: monitoring
+spec:
+  jobLabel: jobLabel
+  selector:
+    matchLabels:
+      app: kube-proxy
+      release: monitoring
+  endpoints:
+  - port: http-metrics
+    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+  relabelings:
+    - sourceLabels: [__metrics_path__]
+      targetLabel: cluster
+      replacement: cloudcli

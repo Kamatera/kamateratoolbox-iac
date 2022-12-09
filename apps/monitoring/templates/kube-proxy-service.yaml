@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-proxy
+  labels:
+    app: kube-proxy
+    release: monitoring
+spec:
+  ports:
+    - name: http-metrics
+      protocol: TCP
+      port: 10249
+      targetPort: 10249
+  selector:
+    app: prometheus-node-exporter
+    release: monitoring

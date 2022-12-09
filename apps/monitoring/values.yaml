@@ -59,10 +59,14 @@ kube-prometheus-stack:
     endpoints:
       - ~iac:controlplane_public_ip~
 
-  kubeProxy:
-    endpoints:
-      - ~iac:controlplane_public_ip~
-
   kubeScheduler:
     endpoints:
       - ~iac:controlplane_public_ip~
+
+  kubeProxy:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+    service:
+      enabled: false
+

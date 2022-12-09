@@ -11,5 +11,12 @@ resource "rancher2_cluster" "cloudcli" {
         "default-ssl-certificate" = "ingress-nginx/cloudcli-default-ssl",
       }
     }
+    services {
+      kubeproxy {
+        extra_args = {
+          "metrics-bind-address" = "0.0.0.0:10249",
+        }
+      }
+    }
   }
 }

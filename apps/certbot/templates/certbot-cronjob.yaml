@@ -20,10 +20,22 @@ spec:
                 - bash
                 - -c
                 - |
-                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew
+                  sleep 86400
+#                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew
               env:
                 - name: CLOUDFLARE_API_TOKEN
                   valueFrom:
                     secretKeyRef:
                       name: cloudflare
                       key: api_token
+              volumeMounts:
+                - name: certbot
+                  mountPath: /etc/letsencrypt
+                  subPath: etc
+                - name: certbot
+                  mountPath: /var/lib/letsencrypt
+                  subPath: var
+          volumes:
+            - name: certbot
+              persistentVolumeClaim:
+                claimName: certbot

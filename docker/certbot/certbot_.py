@@ -114,7 +114,7 @@ def main(root_domain, letsencrypt_email, *args):
                 additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data,
                 skip_kubectl=skip_kubectl)
     else:
-        process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=False, html=html,
+        process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=renew, html=html,
                 additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data,
                 skip_kubectl=skip_kubectl)
 

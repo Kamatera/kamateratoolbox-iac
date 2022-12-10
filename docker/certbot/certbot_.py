@@ -3,7 +3,6 @@ import os
 import sys
 import json
 import base64
-import tempfile
 import itertools
 import subprocess
 from textwrap import dedent
@@ -33,7 +32,7 @@ def register_wildcard_dns(root_domain, letsencrypt_email, additional_domains):
     ])
 
 
-def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html, additional_domains, has_letsencrypt_data):
+def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html, additional_domains, has_letsencrypt_data, skip_kubectl):
     if has_letsencrypt_data and renew:
         subprocess.check_call(['certbot', 'renew'])
         print("Successful renewal using certbot")
@@ -43,27 +42,28 @@ def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew
     else:
         register_wildcard_dns(root_domain, letsencrypt_email, additional_domains)
         print("Successful wildcard dns registration using certbot")
-    certs_path = f'/etc/letsencrypt/live/{root_domain}'
-    if renew:
-        data = json.loads(subprocess.check_output(["kubectl", "-n", secret_namespace, "get", "secret", secret_name, "-ojsonpath={.data}"]))
-        with open(os.path.join(certs_path, 'fullchain.pem'), 'r') as f:
-            cert = f.read()
-        with open(os.path.join(certs_path, 'privkey.pem'), 'r') as f:
-            key = f.read()
-        if (
-            base64.b64decode(data['tls.crt'].encode()).decode().strip() == cert.strip()
-            and base64.b64decode(data['tls.key'].encode()).decode().strip() == key.strip()
-        ):
-            print("No change to secret")
-            return
+    if not skip_kubectl:
+        certs_path = f'/etc/letsencrypt/live/{root_domain}'
+        if renew:
+            data = json.loads(subprocess.check_output(["kubectl", "-n", secret_namespace, "get", "secret", secret_name, "-ojsonpath={.data}"]))
+            with open(os.path.join(certs_path, 'fullchain.pem'), 'r') as f:
+                cert = f.read()
+            with open(os.path.join(certs_path, 'privkey.pem'), 'r') as f:
+                key = f.read()
+            if (
+                base64.b64decode(data['tls.crt'].encode()).decode().strip() == cert.strip()
+                and base64.b64decode(data['tls.key'].encode()).decode().strip() == key.strip()
+            ):
+                print("No change to secret")
+                return
+            subprocess.check_call([
+                'kubectl', '-n', secret_namespace, 'delete', 'secret', secret_name,
+            ])
         subprocess.check_call([
-            'kubectl', '-n', secret_namespace, 'delete', 'secret', secret_name,
+            'kubectl', '-n', secret_namespace, 'create', 'secret', 'tls', secret_name,
+            '--cert', f'{certs_path}/fullchain.pem',
+            '--key', f'{certs_path}/privkey.pem'
         ])
-    subprocess.check_call([
-        'kubectl', '-n', secret_namespace, 'create', 'secret', 'tls', secret_name,
-        '--cert', f'{certs_path}/fullchain.pem',
-        '--key', f'{certs_path}/privkey.pem'
-    ])
 
 
 def get_certificate_expiry_days(secret_name, secret_namespace):
@@ -84,6 +84,7 @@ def get_certificate_expiry_days(secret_name, secret_namespace):
 def main(root_domain, letsencrypt_email, *args):
     renew = "--renew" in args
     html = "--html" in args
+    skip_kubectl = "--skip-kubectl" in args
     secret_name = "cloudcli-default-ssl"
     secret_namespace = "ingress-nginx"
     additional_domains = []
@@ -94,9 +95,14 @@ def main(root_domain, letsencrypt_email, *args):
             secret_namespace = arg.split("=")[1]
         elif arg.startswith("--additional-domain="):
             additional_domains.append(arg.split("=")[1])
-    print(f'Updating secret {secret_name} in namespace {secret_namespace} for domain {root_domain}')
-    cert_expiry_days = get_certificate_expiry_days(secret_name, secret_namespace)
     has_letsencrypt_data = os.path.exists(f'/etc/letsencrypt/live/{root_domain}')
+    if skip_kubectl:
+        print(f"Updating domain {root_domain} without kubectl")
+        cert_expiry_days = None
+    else:
+        print(f'Updating secret {secret_name} in namespace {secret_namespace} for domain {root_domain}')
+        cert_expiry_days = get_certificate_expiry_days(secret_name, secret_namespace)
+        print(f'Certificate expires in {cert_expiry_days} days')
     if cert_expiry_days is not None:
         if not renew:
             print("ERROR! Secret already exists, will not re-create, certificate renewal is handled from an in-cluster cronjob")
@@ -105,10 +111,12 @@ def main(root_domain, letsencrypt_email, *args):
             print("Certificate is still valid and there is no letsencrypt data in the directory, will not renew to prevent rate limiting")
             exit(0)
         process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=True, html=html,
-                additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data)
+                additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data,
+                skip_kubectl=skip_kubectl)
     else:
         process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=False, html=html,
-                additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data)
+                additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data,
+                skip_kubectl=skip_kubectl)
 
 
 if __name__ == '__main__':

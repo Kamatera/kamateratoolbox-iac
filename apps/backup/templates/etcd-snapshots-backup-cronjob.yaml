@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: etcd-snapshots-backup
+spec:
+  schedule: "0 1,13 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      completions: 1
+      backoffLimit: 0
+      template:
+        spec:
+          nodeSelector:
+            node-role.kubernetes.io/etcd: "true"
+          priorityClassName: system-node-critical
+          tolerations:
+            - operator: Exists
+              effect: NoSchedule
+            - key: CriticalAddonsOnly
+              operator: Exists
+            - operator: Exists
+              effect: NoExecute
+          restartPolicy: Never
+          containers:
+            - name: etcd
+              # Pulled Dec 11, 2022
+              image: alpine@sha256:8914eb54f968791faf6a8638949e480fef81e697984fba772b3976835194c6d4
+              command:
+                - sh
+                - -c
+                - |
+                  ls -lah /opt/source &&\
+                  cp -f /opt/source/*.zip /opt/target/ &&\
+                  ls -lah /opt/target
+              volumeMounts:
+                - name: source
+                  mountPath: /opt/source
+                - name: target
+                  mountPath: /opt/target
+          volumes:
+            - name: source
+              hostPath:
+                path: /opt/rke/etcd-snapshots
+            - name: target
+              persistentVolumeClaim:
+                claimName: etcd-snapshots-backup

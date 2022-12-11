@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: certbot
 spec:
-  schedule: "0 0 * * *"
+  schedule: "0 0,12 * * *"
   concurrencyPolicy: Forbid
   jobTemplate:
     spec:
@@ -29,7 +29,16 @@ spec:
               volumeMounts:
                 - name: certbot-webroot
                   mountPath: /var/www/html
+                - name: certbot
+                  mountPath: /etc/letsencrypt
+                  subPath: etc_letsencrypt
+                - name: certbot
+                  mountPath: /var/lib/letsencrypt
+                  subPath: var_lib_letsencrypt
           volumes:
             - name: certbot-webroot
               persistentVolumeClaim:
                 claimName: certbot-webroot
+            - name: certbot
+              persistentVolumeClaim:
+                claimName: certbot

@@ -69,6 +69,9 @@ path "*" {
   * Add alias to this entity for the approle role id
 * Enable kv secrets engine at `kv`
 * Set your user's token in env var `VAULT_TOKEN`
+* Create another approle for vault backup:
+  * same procedure as the argocd approle, except name it as `vaultbackup`
+  * create the secret in namespace `vault` named `vaultbackup`
 
 ### Terraform State DB
 

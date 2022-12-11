@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: vault-export
+spec:
+  schedule: "0 3,15 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      completions: 1
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: backup
+              # Pulled 11 Dec, 2022
+              image: python:3.8@sha256:300af00b63fc735ec85a1a8305e2bd0a5d3477c1857fdf135c8eb49d09479387
+              command:
+                - python3
+                - -c
+                - |
+                  import time
+
+                  print("Hello World!")
+                  print("Goodbye")
+                  time.sleep(86400)
+              envFrom:
+                - secretRef:
+                    name: vaultbackup
+              volumeMounts:
+                - name: backup
+                  mountPath: /opt/backup
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: state-db-backup

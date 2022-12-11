@@ -4,6 +4,7 @@ import sys
 import json
 import base64
 import itertools
+import traceback
 import subprocess
 from textwrap import dedent
 
@@ -45,20 +46,25 @@ def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew
     if not skip_kubectl:
         certs_path = f'/etc/letsencrypt/live/{root_domain}'
         if renew:
-            data = json.loads(subprocess.check_output(["kubectl", "-n", secret_namespace, "get", "secret", secret_name, "-ojsonpath={.data}"]))
-            with open(os.path.join(certs_path, 'fullchain.pem'), 'r') as f:
-                cert = f.read()
-            with open(os.path.join(certs_path, 'privkey.pem'), 'r') as f:
-                key = f.read()
-            if (
-                base64.b64decode(data['tls.crt'].encode()).decode().strip() == cert.strip()
-                and base64.b64decode(data['tls.key'].encode()).decode().strip() == key.strip()
-            ):
-                print("No change to secret")
-                return
-            subprocess.check_call([
-                'kubectl', '-n', secret_namespace, 'delete', 'secret', secret_name,
-            ])
+            try:
+                data = json.loads(subprocess.check_output(["kubectl", "-n", secret_namespace, "get", "secret", secret_name, "-ojsonpath={.data}"]))
+            except:
+                traceback.print_exc()
+                data = None
+            if data is not None:
+                with open(os.path.join(certs_path, 'fullchain.pem'), 'r') as f:
+                    cert = f.read()
+                with open(os.path.join(certs_path, 'privkey.pem'), 'r') as f:
+                    key = f.read()
+                if (
+                    base64.b64decode(data['tls.crt'].encode()).decode().strip() == cert.strip()
+                    and base64.b64decode(data['tls.key'].encode()).decode().strip() == key.strip()
+                ):
+                    print("No change to secret")
+                    return
+                subprocess.check_call([
+                    'kubectl', '-n', secret_namespace, 'delete', 'secret', secret_name,
+                ])
         subprocess.check_call([
             'kubectl', '-n', secret_namespace, 'create', 'secret', 'tls', secret_name,
             '--cert', f'{certs_path}/fullchain.pem',

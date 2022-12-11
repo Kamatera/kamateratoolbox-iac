@@ -6,10 +6,10 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - "~iac:cloudcli_server_domain~"
+        - {{ .Values.cloudcliServerDomain | quote }}
       secretName: cloudcli-server-tls
   rules:
-    - host: "~iac:cloudcli_server_domain~"
+    - host: {{ .Values.cloudcliServerDomain | quote }}
       http:
         paths:
           - path: /.well-known

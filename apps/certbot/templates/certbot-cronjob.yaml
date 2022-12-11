@@ -30,11 +30,12 @@ spec:
               volumeMounts:
                 - name: certbot
                   mountPath: /etc/letsencrypt
-                  subPath: etc
+                  subPath: etc_letsencrypt
                 - name: certbot
                   mountPath: /var/lib/letsencrypt
-                  subPath: var
+                  subPath: var_lib_letsencrypt
           volumes:
             - name: certbot
-              persistentVolumeClaim:
-                claimName: certbot
+              nfs:
+                path: /storage/certbot-{{ .Values.root_domain }}
+                server: {{ .Values.nfs_private_ip }}

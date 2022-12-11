@@ -84,3 +84,12 @@ infra_apps:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
     targetRevision: main
     path: apps/backup
+
+- name: cluster-admin
+  disableAutoSync: true
+  project: infra
+  destinationNamespace: cluster-admin
+  source:
+    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
+    targetRevision: main
+    path: apps/cluster-admin

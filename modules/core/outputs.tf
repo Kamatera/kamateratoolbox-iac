@@ -9,5 +9,6 @@ output "core" {
     "worker_ips" = [for each in kamatera_server.workers : each.public_ips[0]]
     terraform_state_db_ingress_tcp_port = 9941
     default_ingress_hostname = "cloudcli-default-ingress.${var.defaults.root_domain}"
+    ssh_access_point_public_ip = kamatera_server.ssh_access_point.public_ips[0]
   }
 }

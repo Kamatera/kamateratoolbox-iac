@@ -27,6 +27,9 @@ projects:
         - name: '*'
           namespace: backup
           server: 'https://kubernetes.default.svc'
+        - name: '*'
+          namespace: cluster-admin
+          server: 'https://kubernetes.default.svc'
       sourceRepos:
         - https://github.com/Kamatera/kamateratoolbox-iac.git
         - https://github.com/prometheus-community/helm-charts.git

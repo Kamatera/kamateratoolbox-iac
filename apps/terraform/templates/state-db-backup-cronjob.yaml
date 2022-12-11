@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: state-db-backup
+spec:
+  schedule: "0 2,14 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      completions: 1
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: backup
+              image: {{ .Values.stateDb.image }}
+              command:
+                - bash
+                - -c
+                - |
+                  cd $(mktemp -d) &&\
+                  pg_dump -h state-db -U postgres | gzip > dump.sql.gz &&\
+                  mv dump.sql.gz /opt/backup/$(date +%Y-%m-%d-%H).sql.gz &&\
+                  find /opt/backup -type f -mtime +7 -delete &&\
+                  ls -lah /opt/backup
+              env:
+                - name: PGPASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: state-db
+                      key: POSTGRES_PASSWORD
+              volumeMounts:
+                - name: backup
+                  mountPath: /opt/backup
+          volumes:
+            - name: backup
+              persistentVolumeClaim:
+                claimName: state-db-backup

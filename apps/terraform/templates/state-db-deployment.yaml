@@ -44,8 +44,7 @@ spec:
               subPath: state_db_postgres
       containers:
         - name: postgres
-          # pulled Sep 18, 2022
-          image: postgres:14@sha256:b0ee049a2e347f5ec8c64ad225c7edbc88510a9e34450f23c4079a489ce16268
+          image: {{ .Values.stateDb.image }}
           args: [
             -c, "ssl_cert_file=/opt/secured_ssl/server.crt",
             -c, "ssl_key_file=/opt/secured_ssl/server.key",

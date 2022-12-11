@@ -1,6 +1,6 @@
 image: kamatera/cloudcli-server:ce74ad8a1dbd13f5dc101a82cf226afa65195701
 # Build from docker/certbot on Dec 11, 2022
-certbot_image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:c9b1c1c39f685b662bddfab69b9ce6b976f52b58
+certbot_image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
 minReplicas: 4
 maxReplicas: 15
 cloudcliServerDomain: "~iac:cloudcli_server_domain~"

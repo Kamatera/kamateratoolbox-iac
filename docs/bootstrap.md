@@ -31,11 +31,82 @@ defaults = {
 
 Replace default values with a map of values as needed for the environment's modules.
 
-You can add the kubeconfig file to your local kubeconfig file using the following command:
+### Vault
+
+* Create policies:
+
+**readonly**
 
 ```
-cp ~/.kube/config ~/.kube/config.$(date +%Y-%m-%d).bak &&\
-KUBECONFIG=<(bin/terraform.py main cloudcli output -raw kubeconfig):~/.kube/config kubectl config view --flatten \
-    > ~/.kube/config.new &&\
-mv ~/.kube/config.new ~/.kube/config
+path "kv/data/*" {
+  capabilities = [ "read" ]
+}
 ```
+
+**admin**
+
+```
+path "*" {
+  capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+}
+```
+
+* Enable user auth method
+* Enable approle auth method
+* Create userpass user for yourself
+* Create entity for yourself with admin policy
+* Add alias to your entity for your userpass user
+* Log-in as your user
+* Create an approle for argocd:
+  * `vault write auth/approle/role/argocd token_ttl=1h token_max_ttl=4h`
+  * `vault write -f auth/approle/role/argocd/secret-id`
+  * Get the role-id: `vault read auth/approle/role/argocd/role-id`
+  * Create a secret in namespace `argocd` named `argocd-vault-plugin-credentials` with the following content:
+    * `AVP_ROLE_ID`
+    * `AVP_SECRET_ID`
+    * `VAULT_ADDR`
+  * Create entity for this approle with readonly policy
+  * Add alias to this entity for the approle role id
+* Enable kv secrets engine at `kv`
+* Set your user's token in env var `VAULT_TOKEN`
+
+### Terraform State DB
+
+Create a Vault secret at `iac/terraform` with the following keys:
+
+* `backend-db-password`: generate a password using `pwgen -s 32 1`
+* `state_db_server.key` / `state_db_server.crt`: generate a self-signed certificate using:
+  * `openssl req -new -x509 -days 365 -nodes -text -out server.crt -keyout server.key -subj "/CN=terraform-state-db.localhost"`
+
+Sync the Terraform argocd APP
+
+After DB pod is running, restart it to force ssl connection to be used.
+
+Set state db connection string env var:
+
+```
+export STATE_DB_CONN_STRING=postgres://postgres:PASSWORD@cloudcli-default-ingress.DOMAIN:9941/postgres
+```
+
+edit relevant terraform environment and set to `pg` backend.
+
+Run init and migrate the state to the remote backend.
+
+You can delete the tfstate files.
+
+### Certbot
+
+Set vault secret at `iac/cloudflare` with key `api_token` and value of your Cloudflare API token.
+
+### Monitoring
+
+Set sendgrid secret at `iac/sendgrid` with the following keys:
+* `user` / `password` - api smtp relay integration username/password
+* `from_address` - for notification emails
+
+Setup Grafana:
+
+* Login at https://cloudcli-grafana.ROOT_DOMAIN with username `admin`, password `prom-operator`
+* Change admin password to a secure one
+* Create a user for yourself, set it to global Admin role and to workspace default as admin.
+* Edit alerting contact points and set your email to the default contact point and test it.

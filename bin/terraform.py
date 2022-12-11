@@ -32,8 +32,7 @@ def get_apply_args(environment_name, path, path_id, command, *args):
     #   'plan', 'apply', 'destroy', 'refresh'
     if STATE_DB_CONN_STRING:
         args = [f'-var=backend_config_conn_str={STATE_DB_CONN_STRING}', *args]
-    if path_id.split('.')[2:] == ['dns']:
-        args = [f'-var=cloudflare_api_token={os.environ["CLOUDFLARE_API_TOKEN"]}', *args]
+    args = [f'-var=cloudflare_api_token={os.environ.get("CLOUDFLARE_API_TOKEN") or ""}', *args]
     return ['-var-file=../defaults.terraform.tfvars', *args]
 
 

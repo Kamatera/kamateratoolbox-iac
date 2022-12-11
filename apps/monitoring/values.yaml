@@ -98,4 +98,3 @@ kube-prometheus-stack:
       enabled: false
     service:
       enabled: false
-

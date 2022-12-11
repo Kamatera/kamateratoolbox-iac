@@ -72,6 +72,9 @@ path "*" {
 * Create another approle for vault backup:
   * same procedure as the argocd approle, except name it as `vaultbackup`
   * create the secret in namespace `vault` named `vaultbackup`
+* Create a secret in Vault under `iac/vault/export` with key `encryption_password` containing a random password
+  for encrypting the vault backup
+* Set this password in the `vaultbackup` secret as `VAULT_EXPORT_ENCRYPTION_PASSWORD`
 
 ### Terraform State DB
 

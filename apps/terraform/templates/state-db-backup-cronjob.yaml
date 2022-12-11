@@ -22,7 +22,7 @@ spec:
                   cd $(mktemp -d) &&\
                   pg_dump -h state-db -U postgres | gzip > dump.sql.gz &&\
                   mv dump.sql.gz /opt/backup/$(date +%Y-%m-%d-%H).sql.gz &&\
-                  find /opt/backup -type f -mtime +7 -delete &&\
+                  find /opt/backup -type f -mtime +30 -delete &&\
                   ls -lah /opt/backup
               env:
                 - name: PGPASSWORD

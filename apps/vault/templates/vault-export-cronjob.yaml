@@ -14,17 +14,18 @@ spec:
           restartPolicy: Never
           containers:
             - name: backup
-              # Pulled 11 Dec, 2022
-              image: python:3.8@sha256:300af00b63fc735ec85a1a8305e2bd0a5d3477c1857fdf135c8eb49d09479387
+              image: {{ .Values.vaultExportImage | quote }}
               command:
-                - python3
+                - bash
                 - -c
                 - |
-                  import time
-
-                  print("Hello World!")
-                  print("Goodbye")
-                  time.sleep(86400)
+                  export VAULT_TOKEN="$(vault write -format=json auth/approle/login role_id=$AVP_ROLE_ID \
+                    secret_id=$AVP_SECRET_ID | jq -r .auth.client_token)" &&\
+                  cd $(mktemp -d) &&\
+                  vault_export.py export.json.gpg &&\
+                  mv export.json.gpg /opt/backup/$(date +%Y-%m-%d-%H).json.gpg &&\
+                  find /opt/backup -type f -mtime +30 -delete &&\
+                  ls -lah /opt/backup
               envFrom:
                 - secretRef:
                     name: vaultbackup

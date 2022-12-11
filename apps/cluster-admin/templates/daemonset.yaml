@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cluster-admin
+spec:
+  selector:
+    matchLabels:
+      name: ssh-authorized-keys
+  template:
+    metadata:
+      labels:
+        name: ssh-authorized-keys
+    spec:
+      priorityClassName: system-node-critical
+      tolerations:
+        - operator: Exists
+          effect: NoSchedule
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - operator: Exists
+          effect: NoExecute
+      initContainers:
+        - name: ssh-authorized-keys
+          # Pulled Dec 12, 2022
+          image: python:3.8@sha256:7c5b3ec91b7e4131dead176d824ddf317e6c19fe1ae38c54ec0ae6038908dd18
+          command:
+            - python3
+            - -c
+            - |
+              import os
+              with open('/hostssh/authorized_keys', 'r') as f:
+                authorized_keys = f.read()
+              for k, v in os.environ.items():
+                if k.startswith('SSHKEY_'):
+                  k = k.replace('SSHKEY_', '')
+                  if v not in authorized_keys:
+                    with open('/hostssh/authorized_keys', 'a') as f:
+                      f.write(f"\n\n# {k}\n{v}\n")
+                    print(f'Added {k} to authorized_keys')
+          envFrom:
+            - configMapRef:
+                name: ssh-authorized-keys
+          volumeMounts:
+            - name: hostssh
+              mountPath: /hostssh
+      containers:
+        - name: pause
+          image: k8s.gcr.io/pause:3.2
+      volumes:
+        - name: hostssh
+          hostPath:
+            path: /root/.ssh

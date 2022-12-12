@@ -9,9 +9,37 @@ letters:
 ENVIRONMENT_NAME=
 ```
 
-Prerequisites:
+Install the [README](../README.md) prerequisites
 
-* Follow the [README](../README.md) prerequisites and login steps.
+Set env vars:
+
+```
+# Kamatera admin credentials
+export KAMATERA_API_CLIENT_ID=
+export KAMATERA_API_SECRET=
+
+# Rancher admin credentials
+export RANCHER_ACCESS_KEY=
+export RANCHER_SECRET_KEY=
+
+# lower level access key for node management, you can get it from the Rancher default node templates
+export KAMATERA_NODE_MANAGEMENT_API_CLIENT_ID=
+export KAMATERA_NODE_MANAGEMENT_API_SECRET=
+
+# cloudflare restricted token with Zone:DNS:Edit permissions for relevant domain
+export CLOUDFLARE_API_TOKEN=
+
+# vault admin token
+export VAULT_ADDR=
+export VAULT_TOKEN=
+
+# terraform state DB connection string
+export STATE_DB_CONN_STRING=postgres://user:pass@db.example.com/terraform_backend
+
+# access key for the autoscaler, this has to be a full access key
+export KAMATERA_AUTOSCALER_API_CLIENT_ID=
+export KAMATERA_AUTOSCALER_API_SECRET=
+```
 
 Duplicate an existing environment directory to directory `environments/$ENVIRONMENT_NAME`
 
@@ -116,3 +144,28 @@ Setup Grafana:
 * Change admin password to a secure one
 * Create a user for yourself, set it to global Admin role and to workspace default as admin.
 * Edit alerting contact points and set your email to the default contact point and test it.
+
+### Save secrets to Vault
+
+Save all environment var secret values to Vault:
+
+```
+vault kv put -mount=kv iac/terraform/env \
+  KAMATERA_API_CLIENT_ID=$KAMATERA_API_CLIENT_ID \
+  KAMATERA_API_SECRET=$KAMATERA_API_SECRET \
+  RANCHER_ACCESS_KEY=$RANCHER_ACCESS_KEY \
+  RANCHER_SECRET_KEY=$RANCHER_SECRET_KEY \
+  KAMATERA_NODE_MANAGEMENT_API_CLIENT_ID=$KAMATERA_NODE_MANAGEMENT_API_CLIENT_ID \
+  KAMATERA_NODE_MANAGEMENT_API_SECRET=$KAMATERA_NODE_MANAGEMENT_API_SECRET \
+  CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN \
+  STATE_DB_CONN_STRING=$STATE_DB_CONN_STRING \
+  KAMATERA_AUTOSCALER_API_CLIENT_ID=$KAMATERA_AUTOSCALER_API_CLIENT_ID \
+  KAMATERA_AUTOSCALER_API_SECRET=$KAMATERA_AUTOSCALER_API_SECRET
+```
+
+Save the default.terraform.tfvars file to Vault:
+
+```
+vault kv put -mount=kv iac/terraform/default-tfvars \
+  tfvars=@environments/$ENVIRONMENT_NAME/defaults.terraform.tfvars
+```

@@ -13,34 +13,17 @@ Infrastructure as Code for Kamatera CloudCLI and 3rd party APIs and tools.
 
 ## Login
 
-Set secrets in env vars:
+Set Vault credentials:
 
 ```
-# Kamatera admin credentials
-export KAMATERA_API_CLIENT_ID=
-export KAMATERA_API_SECRET=
-
-# Rancher admin credentials
-export RANCHER_ACCESS_KEY=
-export RANCHER_SECRET_KEY=
-
-# lower level access key for node management, you can get it from the Rancher default node templates
-export KAMATERA_NODE_MANAGEMENT_API_CLIENT_ID=
-export KAMATERA_NODE_MANAGEMENT_API_SECRET=
-
-# cloudflare restricted token with Zone:DNS:Edit permissions for relevant domain
-export CLOUDFLARE_API_TOKEN=
-
-# vault admin token
 export VAULT_ADDR=
 export VAULT_TOKEN=
+```
 
-# terraform state DB connection string
-export STATE_DB_CONN_STRING=postgres://user:pass@db.example.com/terraform_backend
+Set environment variables and download secret files:
 
-# access key for the autoscaler, this has to be a full access key
-export KAMATERA_AUTOSCALER_API_CLIENT_ID=
-export KAMATERA_AUTOSCALER_API_SECRET=
+```
+eval "$(bin/login.py ENVIRONMENT_NAME)"
 ```
 
 ## Usage

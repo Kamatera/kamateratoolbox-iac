@@ -43,6 +43,38 @@ spec:
           volumeMounts:
             - name: hostssh
               mountPath: /hostssh
+        - name: firewall
+          # pulled Sep 18, 2022
+          image: alpine@sha256:bc41182d7ef5ffc53a40b044e725193bc10142a1243f395ee852a8d9730fc2ad
+          command:
+            - sh
+            - -c
+            - |
+              chroot /host bash -c '
+                ufw --force reset &&\
+                ufw default allow outgoing &&\
+                ufw default deny incoming &&\
+                ufw default deny routed &&\
+                ufw allow in on eth1 &&\
+                for e in $(env); do
+                  if [[ $e =~ ^ALLOWED_IP_ ]]; then
+                      ufw allow in from $(echo $e | cut -d= -f2) to any
+                  fi
+                done &&\
+                ufw --force enable &&\
+                ufw status verbose
+              '
+          securityContext:
+            privileged: true
+            runAsNonRoot: false
+            readOnlyRootFilesystem: false
+            allowPrivilegeEscalation: true
+          envFrom:
+            - configMapRef:
+                name: allowed-ips
+          volumeMounts:
+            - name: hostfs
+              mountPath: /host
       containers:
         - name: pause
           image: k8s.gcr.io/pause:3.2
@@ -50,3 +82,6 @@ spec:
         - name: hostssh
           hostPath:
             path: /root/.ssh
+        - name: hostfs
+          hostPath:
+            path: /

@@ -26,7 +26,7 @@ Add the Kubernetes context:
 bin/add_kube_context.sh
 ```
 
-Set environment variables and download secret files:
+Set environment variables and download secret files for an environment:
 
 ```
 eval "$(bin/login.py ENVIRONMENT_NAME)"

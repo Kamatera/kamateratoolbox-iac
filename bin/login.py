@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 import sys
 import json
 import traceback
@@ -32,6 +33,15 @@ def main(*args):
         with open(f'environments/{environment_name}/defaults.terraform.tfvars', 'w') as f:
             f.write(tfvars)
         _print(f"saved default tfvars at 'environments/{environment_name}/defaults.terraform.tfvars'")
+        if not os.path.exists('.id_rsa'):
+            ssh_private_key = json.loads(subprocess.check_output([
+                "vault", "kv", "get", "-mount=kv", "-format=json", "iac/terraform/ssh_access_point"
+            ]))['data']['data']['private_key']
+            with open('.id_rsa', 'w') as f:
+                f.write(ssh_private_key)
+            subprocess.check_call(['chmod', '400', '.id_rsa'])
+        print(f"export ENVIRONMENT_NAME={environment_name}")
+        _print(f"ENVIRONMENT_NAME={environment_name}")
     except:
         _print(traceback.format_exc())
         ret = 1

@@ -4,3 +4,4 @@
 .env
 defaults.terraform.tfvars
 terraform.tfstate*
+.id_rsa

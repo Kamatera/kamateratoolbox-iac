@@ -30,6 +30,28 @@ resource "null_resource" "ssh_access_point_key" {
   }
 }
 
+resource "null_resource" "save_ssh_access_point_keys_in_vault" {
+  depends_on = [null_resource.ssh_access_point_key]
+  triggers = {
+    v = "2"
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      TEMPDIR=`mktemp -d` && echo $TEMPDIR && cd $TEMPDIR &&\
+      ssh -q -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+        root@${kamatera_server.ssh_access_point.public_ips[0]} "cat ~/.ssh/id_rsa.pub" \
+          > id_rsa.pub &&\
+      ssh -q -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+        root@${kamatera_server.ssh_access_point.public_ips[0]} "cat ~/.ssh/id_rsa" \
+          > id_rsa &&\
+      vault kv put -mount=kv iac/terraform/ssh_access_point \
+        private_key=@id_rsa \
+        public_key=@id_rsa.pub &&\
+      cd && rm -rf $TEMPDIR
+    EOT
+  }
+}
+
 module "get_ssh_access_point_key" {
   depends_on = [null_resource.ssh_access_point_key]
   source = "../common/external_data_command"

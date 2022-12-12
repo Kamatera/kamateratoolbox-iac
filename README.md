@@ -20,6 +20,12 @@ export VAULT_ADDR=
 export VAULT_TOKEN=
 ```
 
+Add the Kubernetes context:
+
+```
+bin/add_kube_context.sh
+```
+
 Set environment variables and download secret files:
 
 ```

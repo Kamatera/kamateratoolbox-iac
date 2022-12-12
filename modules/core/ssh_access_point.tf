@@ -170,6 +170,9 @@ resource "kubernetes_namespace" "cluster_admin" {
   metadata {
     name = "cluster-admin"
   }
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 resource "kubernetes_config_map" "ssh_authorized_keys" {

@@ -169,3 +169,10 @@ Save the default.terraform.tfvars file to Vault:
 vault kv put -mount=kv iac/terraform/default-tfvars \
   tfvars=@environments/$ENVIRONMENT_NAME/defaults.terraform.tfvars
 ```
+
+Save the kubeconfig file to Vault:
+
+```
+vault kv put -mount=kv iac/terraform/kubeconfig \
+  kubeconfig="$(bin/terraform.py main core output -raw kubeconfig)"
+```

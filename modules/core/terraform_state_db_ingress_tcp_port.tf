@@ -17,7 +17,7 @@ locals {
 }
 
 resource "kubernetes_config_map_v1_data" "terraform_state_db_add_ingress_tcp_port_configmap" {
-  depends_on = [module.set_context]
+  depends_on = [null_resource.check_kuberenetes]
   field_manager = "terraform_module_core"
   metadata {
     name = "tcp-services"
@@ -27,9 +27,10 @@ resource "kubernetes_config_map_v1_data" "terraform_state_db_add_ingress_tcp_por
 }
 
 resource "null_resource" "terraform_state_db_add_ingress_tcp_port_daemonset" {
-  depends_on = [module.set_context]
+  depends_on = [null_resource.check_kuberenetes]
   provisioner "local-exec" {
     command = <<-EOF
+      kubectl config set-context cloudcli &&\
       kubectl -n ingress-nginx patch daemonset nginx-ingress-controller \
         --type='json' \
         -p='${local.patch_ingress_tcp_port_daemonset_json}'

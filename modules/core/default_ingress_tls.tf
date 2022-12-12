@@ -1,5 +1,5 @@
 resource "null_resource" "default_ingress_tls" {
-  depends_on = [module.set_context, null_resource.certbot]
+  depends_on = [null_resource.check_kuberenetes, null_resource.certbot]
   triggers = {
     command = <<-EOF
       python3 bin/default_ingress_tls.py "${kamatera_server.rancher.public_ips[0]}" "${var.defaults.root_domain}"
@@ -9,6 +9,7 @@ resource "null_resource" "default_ingress_tls" {
   provisioner "local-exec" {
     command = <<-EOF
       cd ${path.module}
+      kubectl config set-context cloudcli &&\
       ${self.triggers.command}
     EOF
   }

@@ -12,3 +12,8 @@ output "core" {
     ssh_access_point_public_ip = kamatera_server.ssh_access_point.public_ips[0]
   }
 }
+
+output "kubeconfig" {
+  value = rancher2_cluster.cloudcli.kube_config
+  sensitive = true
+}

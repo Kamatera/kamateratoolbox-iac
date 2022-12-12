@@ -12,4 +12,9 @@ output "core" {
   value = module.core.core
 }
 
+output "kubeconfig" {
+  value = module.core.kubeconfig
+  sensitive = true
+}
+
 variable "backend_config_conn_str" {}

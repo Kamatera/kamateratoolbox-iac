@@ -1,7 +1,8 @@
 resource "null_resource" "monitoring_get_etcd_certs" {
-  depends_on = [module.set_context]
+  depends_on = [null_resource.check_kuberenetes]
   triggers = {
     command = <<-EOF
+      kubectl config set-context cloudcli &&\
       echo "
       apiVersion: v1
       kind: Secret

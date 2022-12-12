@@ -10,6 +10,7 @@ resource "null_resource" "httpauth" {
   provisioner "local-exec" {
     command = <<-EOF
       cd ${path.module}
+      kubectl config set-context cloudcli &&\
       ${self.triggers.command}
     EOF
   }

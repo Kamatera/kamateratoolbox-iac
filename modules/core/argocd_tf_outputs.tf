@@ -1,5 +1,5 @@
 resource "kubernetes_config_map" "tf_outputs" {
-  depends_on = [module.set_context]
+  depends_on = [null_resource.check_kuberenetes]
   metadata {
     name      = "tf-outputs"
     namespace = "argocd"

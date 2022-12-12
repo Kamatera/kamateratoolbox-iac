@@ -12,19 +12,11 @@ resource "null_resource" "kubeconfig" {
   }
 }
 
-module "set_context" {
-  source = "../common/set_kubernetes_context"
-  context_name = "cloudcli"
-}
-
 resource "null_resource" "check_kuberenetes" {
-  depends_on = [module.set_context]
+  depends_on = [null_resource.kubeconfig]
   provisioner "local-exec" {
     command = <<-EOF
-      if [ "$(kubectl config current-context)" != "cloudcli" ]; then
-        echo "Kubernetes context is not set to cloudcli"
-        exit 1
-      fi
+      kubectl config set-context cloudcli &&\
       if ! kubectl get nodes; then
         echo "Kubernetes cluster is not reachable"
         exit 1

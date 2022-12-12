@@ -36,18 +36,3 @@ resource "null_resource" "nfs_no_root_squash" {
     ]
   }
 }
-
-#resource "null_resource" "test_ssh_access" {
-#  provisioner "remote-exec" {
-#    connection {
-#      host = kamatera_server.nfs.public_ips[0]
-#      private_key = file(var.defaults.ssh_private_key_file)
-#    }
-#    inline = [
-#      "#!/bin/bash",
-#      "echo 'ssh access works'",
-#      "ls -lah",
-#      "if [[ -f /etc/exports ]]; then echo 'file exists'; else echo 'file does not exist'; fi"
-#    ]
-#  }
-#}

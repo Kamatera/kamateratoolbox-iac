@@ -8,10 +8,7 @@ import json
 # core modules which will be applied first in this order
 # other modules will be applied after these modules in unspecified order
 CORE_MODULES = [
-    "cloudcli",
-    "dns",
-    "storage",
-    "apps",
+    "core",
 ]
 
 

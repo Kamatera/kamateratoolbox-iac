@@ -12,7 +12,7 @@ import requests
 from kubernetes import client, config
 
 
-DEBUG = False
+DEBUG = os.environ.get("AVP_DEBUG") == 'yes'
 AVP_ROLE_ID = os.environ.get('AVP_ROLE_ID')
 AVP_SECRET_ID = os.environ.get('AVP_SECRET_ID')
 VAULT_ADDR = os.environ.get('VAULT_ADDR')

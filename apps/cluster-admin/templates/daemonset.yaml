@@ -51,6 +51,13 @@ spec:
             - bash
             - -c
             - |
+              FORCE_RELOAD_DAEMONSET=no
+              if ! kubectl get -n cluster-admin configmap allowed-ips -o json | grep "ALLOWED_IP" | grep '"'${HOST_IP}'"'; then
+                echo "Adding ${HOST_IP} to allowed-ips configmap"
+                kubectl patch configmap/allowed-ips -n cluster-admin --type merge \
+                  -p '{"data":{"'ALLOWED_IP_${HOST_IP}'":"'${HOST_IP}'"}}'
+                FORCE_RELOAD_DAEMONSET=yes
+              fi
               cp /opt/secret/sshapprivatekey /opt/id_rsa &&\
               chmod 400 /opt/id_rsa &&\
               SSH="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /opt/id_rsa root@$HOST_IP"
@@ -70,6 +77,11 @@ spec:
                 ufw --force enable &&\
                 ufw status verbose
               '
+              if [ "${FORCE_RELOAD_DAEMONSET}" == "yes" ]; then
+                echo "Forcing reload of cluster-admin daemonset"
+                kubectl patch daemonset/cluster-admin -n cluster-admin --type merge \
+                  -p '{"spec":{"template":{"metadata":{"labels":{"date":"'"$(date +%s)"'"}}}}}'
+              fi
           env:
             - name: HOST_IP
               valueFrom:
@@ -81,6 +93,7 @@ spec:
           volumeMounts:
             - name: revoke-ips
               mountPath: /opt/secret
+      serviceAccountName: revoke-ips
       containers:
         - name: pause
           image: k8s.gcr.io/pause:3.2

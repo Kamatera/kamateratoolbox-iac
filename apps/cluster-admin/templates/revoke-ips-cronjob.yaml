@@ -25,6 +25,9 @@ spec:
                   cp /opt/secret/sshapprivatekey /opt/id_rsa &&\
                   chmod 400 /opt/id_rsa &&\
                   python3 /opt/code/revoke_ips.py /opt/id_rsa {{ .Values.sshAccessPointPublicIp | quote }}
+              env:
+                - name: PYTHONUNBUFFERED
+                  value: "1"
               volumeMounts:
                 - mountPath: /opt/code
                   name: code

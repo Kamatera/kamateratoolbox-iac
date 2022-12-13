@@ -44,12 +44,13 @@ def main(ssh_access_point_private_key, ssh_access_point_public_ip):
             "-p", json.dumps({"spec": {"template": {"metadata": {"labels": {"date": str(datetime.datetime.now().timestamp())}}}}})
         ])
         print("Revoking IPs from additional servers using ssh")
+        sshargs = ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
         subprocess.check_call([
-            "ssh", "-i", ssh_access_point_private_key, f"root@{ssh_access_point_public_ip}", dedent(f'''
+            "ssh", *sshargs, "-i", ssh_access_point_private_key, f"root@{ssh_access_point_public_ip}", dedent(f'''
                 for SERVER in cloudcli-rancher cloudcli-nfs; do
                     echo revoking ips from $SERVER &&\
                     for IP in {' '.join(revoke_ips.values())} ; do
-                        ssh root@$SERVER ufw delete allow in from $IP to any
+                        ssh {' '.join(sshargs)} root@$SERVER ufw delete allow in from $IP to any
                     done
                 done
             ''')

@@ -6,7 +6,7 @@ resource "kubernetes_config_map_v1" "allowed_ips" {
   }
   data = {}
   lifecycle {
-    ignore_changes = all
+    ignore_changes = [data]
   }
 }
 
@@ -25,6 +25,7 @@ locals {
 }
 
 resource "kubernetes_config_map_v1_data" "allowed_ips" {
+  depends_on = [kubernetes_config_map_v1.allowed_ips]
   metadata {
     name = "allowed-ips"
     namespace = "cluster-admin"
@@ -43,6 +44,7 @@ data "kubernetes_config_map" "allowed_ips" {
 }
 
 resource "null_resource" "firewall" {
+  depends_on = [kubernetes_config_map_v1_data.allowed_ips]
   for_each = tomap({
     "rancher": kamatera_server.rancher.public_ips[0],
   })
@@ -71,4 +73,3 @@ resource "null_resource" "firewall" {
     ]
   }
 }
-

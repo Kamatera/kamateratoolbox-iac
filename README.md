@@ -32,6 +32,14 @@ Set environment variables and download secret files for an environment:
 eval "$(bin/login.py ENVIRONMENT_NAME)"
 ```
 
+Add your IP to the firewall (change YOUR_NAME to your name without any spaces or special chars):
+
+```
+bin/allow_ip.sh YOUR_NAME
+```
+
+All manually allowed IPs will be revoked daily at 04:00
+
 ## Usage
 
 ### Infrastructure

@@ -21,5 +21,6 @@ resource "kubernetes_config_map_v1_data" "tf_outputs" {
     letsencrypt_email = var.defaults.letsencrypt_email
     nfs_private_ip = kamatera_server.nfs.private_ips[0]
     controlplane_public_ip = kamatera_server.controlplane.public_ips[0]
+    ssh_access_point_public_ip = kamatera_server.ssh_access_point.public_ips[0]
   }
 }

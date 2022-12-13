@@ -22,7 +22,7 @@ spec:
                 - bash
                 - -c
                 - |
-                  cp /opt/secret/ssh_access_point_private_key /opt/id_rsa &&\
+                  cp /opt/secret/sshapprivatekey /opt/id_rsa &&\
                   chmod 400 /opt/id_rsa &&\
                   python3 /opt/code/revoke_ips.py /opt/id_rsa {{ .Values.sshAccessPointPublicIp | quote }}
               volumeMounts:

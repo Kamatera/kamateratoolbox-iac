@@ -1,0 +1,32 @@
+{{/*apiVersion: projectcalico.org/v3*/}}
+{{/*kind: GlobalNetworkPolicy*/}}
+{{/*metadata:*/}}
+{{/*  name: k8s-worker*/}}
+{{/*spec:*/}}
+{{/*  selector: "node-role.kubernetes.io/worker == true"*/}}
+{{/*  order: 0*/}}
+{{/*  ingress:*/}}
+{{/*  - action: Allow*/}}
+{{/*    protocol: TCP*/}}
+{{/*    source:*/}}
+{{/*      nets:*/}}
+{{/*      - "<your management CIDR>"*/}}
+{{/*    destination:*/}}
+{{/*      ports: [22]*/}}
+{{/*  - action: Allow*/}}
+{{/*    protocol: ICMP*/}}
+{{/*  - action: Allow*/}}
+{{/*    protocol: TCP*/}}
+{{/*    destination:*/}}
+{{/*      ports: [10250]*/}}
+{{/*  egress:*/}}
+{{/*  - action: Allow*/}}
+{{/*    protocol: TCP*/}}
+{{/*    destination:*/}}
+{{/*      nets:*/}}
+{{/*      - "<your etcd IP>/32"*/}}
+{{/*      ports: [2379]*/}}
+{{/*  - action: Allow*/}}
+{{/*    protocol: UDP*/}}
+{{/*    destination:*/}}
+{{/*      ports: [53, 67]*/}}

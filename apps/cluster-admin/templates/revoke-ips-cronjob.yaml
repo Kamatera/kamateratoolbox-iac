@@ -1,42 +1,42 @@
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: revoke-ips
-spec:
-  schedule: "0 4 * * *"
-  concurrencyPolicy: Forbid
-  jobTemplate:
-    spec:
-      completions: 1
-      backoffLimit: 0
-      template:
-        spec:
-          restartPolicy: Never
-          serviceAccountName: revoke-ips
-          containers:
-            - name: revoke-ips
-              # Build from docker/certbot on Dec 11, 2022
-              # We use this image because it contains the dependencies we need
-              image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
-              command:
-                - bash
-                - -c
-                - |
-                  cp /opt/secret/sshapprivatekey /opt/id_rsa &&\
-                  chmod 400 /opt/id_rsa &&\
-                  python3 /opt/code/revoke_ips.py /opt/id_rsa {{ .Values.sshAccessPointPublicIp | quote }}
-              env:
-                - name: PYTHONUNBUFFERED
-                  value: "1"
-              volumeMounts:
-                - mountPath: /opt/code
-                  name: code
-                - mountPath: /opt/secret
-                  name: secret
-          volumes:
-            - name: code
-              configMap:
-                name: revoke-ips
-            - name: secret
-              secret:
-                secretName: revoke-ips
+{{/*apiVersion: batch/v1*/}}
+{{/*kind: CronJob*/}}
+{{/*metadata:*/}}
+{{/*  name: revoke-ips*/}}
+{{/*spec:*/}}
+{{/*  schedule: "0 4 * * *"*/}}
+{{/*  concurrencyPolicy: Forbid*/}}
+{{/*  jobTemplate:*/}}
+{{/*    spec:*/}}
+{{/*      completions: 1*/}}
+{{/*      backoffLimit: 0*/}}
+{{/*      template:*/}}
+{{/*        spec:*/}}
+{{/*          restartPolicy: Never*/}}
+{{/*          serviceAccountName: revoke-ips*/}}
+{{/*          containers:*/}}
+{{/*            - name: revoke-ips*/}}
+{{/*              # Build from docker/certbot on Dec 11, 2022*/}}
+{{/*              # We use this image because it contains the dependencies we need*/}}
+{{/*              image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc*/}}
+{{/*              command:*/}}
+{{/*                - bash*/}}
+{{/*                - -c*/}}
+{{/*                - |*/}}
+{{/*                  cp /opt/secret/sshapprivatekey /opt/id_rsa &&\*/}}
+{{/*                  chmod 400 /opt/id_rsa &&\*/}}
+{{/*                  python3 /opt/code/revoke_ips.py /opt/id_rsa {{ .Values.sshAccessPointPublicIp | quote }}*/}}
+{{/*              env:*/}}
+{{/*                - name: PYTHONUNBUFFERED*/}}
+{{/*                  value: "1"*/}}
+{{/*              volumeMounts:*/}}
+{{/*                - mountPath: /opt/code*/}}
+{{/*                  name: code*/}}
+{{/*                - mountPath: /opt/secret*/}}
+{{/*                  name: secret*/}}
+{{/*          volumes:*/}}
+{{/*            - name: code*/}}
+{{/*              configMap:*/}}
+{{/*                name: revoke-ips*/}}
+{{/*            - name: secret*/}}
+{{/*              secret:*/}}
+{{/*                secretName: revoke-ips*/}}

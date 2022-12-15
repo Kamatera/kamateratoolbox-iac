@@ -5,11 +5,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      name: ssh-authorized-keys
+      name: cluster-admin
   template:
     metadata:
       labels:
-        name: ssh-authorized-keys
+        name: cluster-admin
     spec:
       priorityClassName: system-node-critical
       tolerations:
@@ -43,57 +43,57 @@ spec:
           volumeMounts:
             - name: hostssh
               mountPath: /hostssh
-        - name: firewall
-          # Built from docker/certbot on Dec 11, 2022
-          # We use this image because it contains the dependencies we need
-          image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
-          command:
-            - bash
-            - -c
-            - |
-              FORCE_RELOAD_DAEMONSET=no
-              if ! kubectl get -n cluster-admin configmap allowed-ips -o json | grep "ALLOWED_IP" | grep '"'${HOST_IP}'"'; then
-                echo "Adding ${HOST_IP} to allowed-ips configmap"
-                kubectl patch configmap/allowed-ips -n cluster-admin --type merge \
-                  -p '{"data":{"'ALLOWED_IP_${HOST_IP}'":"'${HOST_IP}'"}}'
-                FORCE_RELOAD_DAEMONSET=yes
-              fi
-              cp /opt/secret/sshapprivatekey /opt/id_rsa &&\
-              chmod 400 /opt/id_rsa &&\
-              SSH="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /opt/id_rsa root@$HOST_IP"
-              $SSH '
-                ufw --force reset &&\
-                ufw default allow outgoing &&\
-                ufw default deny incoming &&\
-                ufw default deny routed &&\
-                ufw allow in on eth1
-              '
-              for e in $(env); do
-                if [[ $e =~ ^ALLOWED_IP_ ]]; then
-                    $SSH "ufw allow in from $(echo $e | cut -d= -f2) to any"
-                fi
-              done &&\
-              $SSH '
-                ufw --force enable &&\
-                ufw status verbose
-              '
-              if [ "${FORCE_RELOAD_DAEMONSET}" == "yes" ]; then
-                echo "Forcing reload of cluster-admin daemonset"
-                kubectl patch daemonset/cluster-admin -n cluster-admin --type merge \
-                  -p '{"spec":{"template":{"metadata":{"labels":{"date":"'"$(date +%s)"'"}}}}}'
-              fi
-          env:
-            - name: HOST_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
-          envFrom:
-            - configMapRef:
-                name: allowed-ips
-          volumeMounts:
-            - name: revoke-ips
-              mountPath: /opt/secret
-      serviceAccountName: revoke-ips
+{{/*        - name: firewall*/}}
+{{/*          # Built from docker/certbot on Dec 11, 2022*/}}
+{{/*          # We use this image because it contains the dependencies we need*/}}
+{{/*          image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc*/}}
+{{/*          command:*/}}
+{{/*            - bash*/}}
+{{/*            - -c*/}}
+{{/*            - |*/}}
+{{/*              FORCE_RELOAD_DAEMONSET=no*/}}
+{{/*              if ! kubectl get -n cluster-admin configmap allowed-ips -o json | grep "ALLOWED_IP" | grep '"'${HOST_IP}'"'; then*/}}
+{{/*                echo "Adding ${HOST_IP} to allowed-ips configmap"*/}}
+{{/*                kubectl patch configmap/allowed-ips -n cluster-admin --type merge \*/}}
+{{/*                  -p '{"data":{"'ALLOWED_IP_${HOST_IP}'":"'${HOST_IP}'"}}'*/}}
+{{/*                FORCE_RELOAD_DAEMONSET=yes*/}}
+{{/*              fi*/}}
+{{/*              cp /opt/secret/sshapprivatekey /opt/id_rsa &&\*/}}
+{{/*              chmod 400 /opt/id_rsa &&\*/}}
+{{/*              SSH="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /opt/id_rsa root@$HOST_IP"*/}}
+{{/*              $SSH '*/}}
+{{/*                ufw --force reset &&\*/}}
+{{/*                ufw default allow outgoing &&\*/}}
+{{/*                ufw default deny incoming &&\*/}}
+{{/*                ufw default deny routed &&\*/}}
+{{/*                ufw allow in on eth1*/}}
+{{/*              '*/}}
+{{/*              for e in $(env); do*/}}
+{{/*                if [[ $e =~ ^ALLOWED_IP_ ]]; then*/}}
+{{/*                    $SSH "ufw allow in from $(echo $e | cut -d= -f2) to any"*/}}
+{{/*                fi*/}}
+{{/*              done &&\*/}}
+{{/*              $SSH '*/}}
+{{/*                ufw --force enable &&\*/}}
+{{/*                ufw status verbose*/}}
+{{/*              '*/}}
+{{/*              if [ "${FORCE_RELOAD_DAEMONSET}" == "yes" ]; then*/}}
+{{/*                echo "Forcing reload of cluster-admin daemonset"*/}}
+{{/*                kubectl patch daemonset/cluster-admin -n cluster-admin --type merge \*/}}
+{{/*                  -p '{"spec":{"template":{"metadata":{"labels":{"date":"'"$(date +%s)"'"}}}}}'*/}}
+{{/*              fi*/}}
+{{/*          env:*/}}
+{{/*            - name: HOST_IP*/}}
+{{/*              valueFrom:*/}}
+{{/*                fieldRef:*/}}
+{{/*                  fieldPath: status.hostIP*/}}
+{{/*          envFrom:*/}}
+{{/*            - configMapRef:*/}}
+{{/*                name: allowed-ips*/}}
+{{/*          volumeMounts:*/}}
+{{/*            - name: revoke-ips*/}}
+{{/*              mountPath: /opt/secret*/}}
+{{/*      serviceAccountName: revoke-ips*/}}
       containers:
         - name: pause
           image: k8s.gcr.io/pause:3.2
@@ -101,6 +101,6 @@ spec:
         - name: hostssh
           hostPath:
             path: /root/.ssh
-        - name: revoke-ips
-          secret:
-            secretName: revoke-ips
+{{/*        - name: revoke-ips*/}}
+{{/*          secret:*/}}
+{{/*            secretName: revoke-ips*/}}

@@ -17,13 +17,13 @@ def kv_list_recursive(path):
         if key.endswith("/"):
             yield from kv_list_recursive(os.path.join(path, key))
         else:
-            yield key, kv_get(os.path.join(path, key))
+            yield os.path.join(path, key), kv_get(os.path.join(path, key))
 
 
 def kv_get(path):
     return json.loads(subprocess.check_output([
         "vault", "kv", "get", "-format=json", path
-    ]))['data']['data']
+    ]))['data']
 
 
 def gpg_encrypt_file(source, target, password):

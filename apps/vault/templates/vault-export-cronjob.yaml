@@ -23,7 +23,9 @@ spec:
                     secret_id=$AVP_SECRET_ID | jq -r .auth.client_token)" &&\
                   cd $(mktemp -d) &&\
                   vault_export.py export.json.gpg &&\
-                  mv export.json.gpg /opt/backup/$(date +%Y-%m-%d-%H).json.gpg &&\
+                  FILENAME="/opt/backup/$(date +%Y-%m-%d-%H).json.gpg" &&\
+                  echo "Saving export at ${FILENAME}" &&\
+                  mv export.json.gpg "${FILENAME}" &&\
                   find /opt/backup -type f -mtime +30 -delete &&\
                   ls -lah /opt/backup
               envFrom:

@@ -70,11 +70,8 @@ def parse_matches(matches):
 
 
 def get_vault_path_data(vault_token, path):
-    path = os.path.join('kv', 'data', path)
-    return requests.get(
-        os.path.join(VAULT_ADDR, 'v1', path),
-        headers={'X-Vault-Token': vault_token}
-    ).json()['data']['data']
+    url = os.path.join(VAULT_ADDR, 'v1', 'kv', path)
+    return requests.get(url, headers={'X-Vault-Token': vault_token}).json()['data']
 
 
 def get_iac_data():

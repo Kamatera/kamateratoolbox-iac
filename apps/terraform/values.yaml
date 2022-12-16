@@ -12,8 +12,6 @@ stateDb:
 secrets:
   - name: state-db
     data:
-      POSTGRES_PASSWORD: "~vault:iac/terraform:backend-db-password~"
-      # openssl req -new -x509 -days 365 -nodes -text -out server.crt \
-      #  -keyout server.key -subj "/CN=terraform-state-db.localhost"
-      server.key: "~vault:iac/terraform:state_db_server.key~"
-      server.crt: "~vault:iac/terraform:state_db_server.crt~"
+      POSTGRES_PASSWORD: "~vault:iac/terraform/state_db:backend-db-password~"
+      server.key: "~vault:iac/terraform/state_db:state_db_server.key~"
+      server.crt: "~vault:iac/terraform/state_db:state_db_server.crt~"

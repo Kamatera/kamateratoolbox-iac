@@ -29,15 +29,21 @@ spec:
           env:
             - name: VAULT_LOCAL_CONFIG
               value: '{"backend": {"file": {"path": "/var/vault/file"}}, "listener": {"tcp": {"address": "0.0.0.0:8200", "tls_disable": 1}}, "api_addr": "http://127.0.0.1:8200", "ui": true}'
-          {{ if .Values.enableAutoUnseal }}
             - name: UNSEAL_KEYS
-              valueFrom: { "secretKeyRef": { "name": "vault-unseal", "key": "UNSEAL_KEYS" } }
+              valueFrom:
+                secretKeyRef:
+                  name: vault-unseal
+                  key: UNSEAL_KEYS
+                  optional: true
           readinessProbe:
             exec:
               command:
                 - sh
                 - -c
                 - |
+                  if [ "${UNSEAL_KEYS}" == "" ]; then
+                    exit 0
+                  fi
                   SEALED="$(vault status --address=http://localhost:8200 --format=yaml | grep sealed)" &&\
                   if [ "${SEALED}" == "sealed: true" ]; then
                     for KEY in $UNSEAL_KEYS; do
@@ -54,7 +60,6 @@ spec:
             timeoutSeconds: 3
             successThreshold: 1
             failureThreshold: 5
-          {{ end }}
           volumeMounts:
             - name: vaultdata
               mountPath: /var/vault

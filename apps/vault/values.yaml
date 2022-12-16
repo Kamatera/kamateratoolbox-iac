@@ -1,7 +1,4 @@
-# this should be enabled only after you initialize vault and create a secret called vault-unseal
-# with key UNSEAL_KEYS containing 3 unseal keys separated by spaces
-enableAutoUnseal: true
-domain: "cloudcli-vault.~iac:root_domain~"
+domain: "~iac:subdomain_prefix~-vault.~iac:root_domain~"
 
-# built Dec 11, 2022
+# built Dec 11, 2022 from docker/vault_export
 vaultExportImage: ghcr.io/kamatera/kamateratoolbox-iac-vault-export:a7c2270d2545cdd3e4cd947505df7303376eeebf

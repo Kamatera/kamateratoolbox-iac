@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "cloudcli-alertmanager.~iac:root_domain~"
+  - host: "~iac:subdomain_prefix~-alertmanager.~iac:root_domain~"
     http:
       paths:
       - path: /

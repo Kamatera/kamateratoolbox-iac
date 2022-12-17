@@ -9,7 +9,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "cloudcli-prometheus.~iac:root_domain~"
+  - host: "~iac:subdomain_prefix~-prometheus.~iac:root_domain~"
     http:
       paths:
       - path: /

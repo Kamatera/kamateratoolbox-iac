@@ -17,7 +17,7 @@ kube-prometheus-stack:
       enabled: true
       ingressClassName: nginx
       hosts:
-        - cloudcli-grafana.~iac:root_domain~
+        - ~iac:subdomain_prefix~-grafana.~iac:root_domain~
     persistence:
       enabled: true
     serviceMonitor:
@@ -36,7 +36,7 @@ kube-prometheus-stack:
       grafana_net:
         url: https://grafana.net
       server:
-        root_url: https://cloudcli-grafana.~iac:root_domain~
+        root_url: https://~iac:subdomain_prefix~-grafana.~iac:root_domain~
       smtp:
         enabled: true
         host: smtp.sendgrid.net:587

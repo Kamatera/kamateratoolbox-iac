@@ -74,8 +74,8 @@ def get_vault_path_data(vault_token, path):
     return requests.get(url, headers={'X-Vault-Token': vault_token}).json()['data']
 
 
-def get_iac_data():
-    configmap = coreV1Api.read_namespaced_config_map('tf-outputs', 'argocd')
+def get_iac_data(configmap='tf-outputs'):
+    configmap = coreV1Api.read_namespaced_config_map(configmap, 'argocd')
     return configmap.data
 
 
@@ -94,12 +94,19 @@ def get_match_values(parsed_matches):
     vault_token = get_vault_token()
     match_values = {}
     iac_data = None
+    configmap_iac_data = {}
     vault_paths_data = {}
     for match, parsed_match in parsed_matches.items():
         if parsed_match['type'] == 'iac':
-            if iac_data is None:
-                iac_data = get_iac_data()
-            match_values[match] = iac_data.get(parsed_match['key'], '')
+            if '//' in parsed_match['key']:
+                configmap, key = parsed_match['key'].split('//')
+                if configmap not in configmap_iac_data:
+                    configmap_iac_data[configmap] = get_iac_data(configmap)
+                match_values[match] = configmap_iac_data[configmap].get(parsed_match['key'], '')
+            else:
+                if iac_data is None:
+                    iac_data = get_iac_data()
+                match_values[match] = iac_data.get(parsed_match['key'], '')
         elif parsed_match['type'] == 'vault':
             if parsed_match['path'] not in vault_paths_data:
                 vault_paths_data[parsed_match['path']] = get_vault_path_data(vault_token, parsed_match['path'])

@@ -67,3 +67,25 @@ module "apps" {
   controlplane_public_ip = module.cluster.controlplane_public_ip
   alert_email_addresses = var.alert_email_addresses
 }
+
+module "firewall" {
+  source = "../../modules/firewall"
+  hosts = merge(
+    {
+      rancher: module.rancher.private_ip
+      nfs: module.nfs.private_ip
+      controlplane: module.cluster.controlplane_private_ip
+    },
+    {
+      for i, ip in module.cluster.worker_private_ips : "worker${i}" => ip
+    }
+  )
+  ssh_additional_authorized_keys = jsondecode(var.ssh_additional_authorized_keys_json)
+  ssh_private_key_file = var.ssh_private_key_file
+  datacenter_id = var.datacenter_id
+  private_network_full_name = module.private_network.full_name
+  ssh_access_point_name = "${var.name_suffix}-${var.environment_name}-ssh-access-point"
+  ssh_pubkey = file("${path.cwd}/${var.ssh_pubkey_file}")
+  cluster_context = module.cluster.cluster_context
+  argocd_grpc_domain = module.apps.argocd_grpc_domain
+}

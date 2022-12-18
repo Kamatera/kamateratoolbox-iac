@@ -55,3 +55,7 @@ resource "kamatera_server" "rancher" {
 output "public_ip" {
   value = kamatera_server.rancher.public_ips[0]
 }
+
+output "private_ip" {
+  value = kamatera_server.rancher.private_ips[0]
+}

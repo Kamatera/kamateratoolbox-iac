@@ -48,3 +48,19 @@ output "kubeconfig" {
   value = rancher2_cluster.cluster.kube_config
   sensitive = true
 }
+
+output "worker_public_ips" {
+  value = {
+    for i in keys(local.worker_names) : i => kamatera_server.workers[i].public_ips[0]
+  }
+}
+
+output "worker_private_ips" {
+  value = {
+    for i in keys(local.worker_names) : i => kamatera_server.workers[i].private_ips[0]
+  }
+}
+
+output "controlplane_private_ip" {
+  value = kamatera_server.controlplane.private_ips[0]
+}

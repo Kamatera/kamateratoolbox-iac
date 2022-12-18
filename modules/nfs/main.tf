@@ -53,3 +53,7 @@ resource "null_resource" "nfs_no_root_squash" {
 output "private_ip" {
   value = kamatera_server.nfs.private_ips[0]
 }
+
+output "public_ip" {
+  value = kamatera_server.nfs.public_ips[0]
+}

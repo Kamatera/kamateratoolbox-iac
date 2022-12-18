@@ -50,3 +50,7 @@ output "grafana" {
     "admin-password" = "vault kv get -mount=kv -field=admin-password iac/apps/grafana"
   }
 }
+
+output "argocd_grpc_domain" {
+  value = "${var.subdomain_prefix}-argocd-grpc.${var.root_domain}"
+}

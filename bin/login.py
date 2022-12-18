@@ -31,7 +31,7 @@ def set_vars_from_vault(private_ssh_key_path, public_ssh_key_path, vault_addr, v
     for k, v in json.loads(subprocess.check_output([
         'vault', 'kv', 'get', '-mount=kv', '-format=json', vault_kv_path
     ], env=env))['data'].items():
-        print(f"export TF_VAR_{k}={evalstr(v)}")
+        print(f"export TF_VAR_{k}='{evalstr(v)}'")
         print(f'echo -n "TF_VAR_{k} "')
     _print("")
     if not os.path.exists(private_ssh_key_path):

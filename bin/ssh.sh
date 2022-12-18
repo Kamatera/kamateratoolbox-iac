@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
 
-echo not implemented yet
-exit 1
-
 SERVER="${1}"
 
+SSH_ACCESS_POINT_IP="$(bin/terraform.py output -raw ssh_access_point_public_ip)"
 
-if [ "${SERVER}" == "rancher" ]; then
-  IP="$(bin/terraform.py output -raw rancher_public_ip)"
+if [ "${SERVER}" == "ssh_access_point" ]; then
+  exec ssh -i "${TF_VAR_ssh_private_key_file}" root@$SSH_ACCESS_POINT_IP ${@:2}
 else
-  echo "Usage: bin/ssh.sh <server>"
-  echo "Available servers: rancher, nfs, ssh_access_point, controlplane, worker1, worker2, worker3"
-  exit 1
+  exec ssh -ti "${TF_VAR_ssh_private_key_file}" root@$SSH_ACCESS_POINT_IP ssh $SERVER ${@:2}
 fi
-
-exec ssh -i .id_rsa root@$IP ${@:2}

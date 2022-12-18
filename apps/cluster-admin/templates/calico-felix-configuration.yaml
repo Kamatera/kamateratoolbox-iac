@@ -1,0 +1,25 @@
+{{/*apiVersion: crd.projectcalico.org/v1*/}}
+{{/*kind: FelixConfiguration*/}}
+{{/*metadata:*/}}
+{{/*  name: default*/}}
+{{/*spec:*/}}
+{{/*  bpfLogLevel: ''*/}}
+{{/*  failsafeInboundHostPorts:*/}}
+{{/*    - port: 68*/}}
+{{/*      protocol: udp*/}}
+{{/*    - port: 179*/}}
+{{/*      protocol: tcp*/}}
+{{/*    - port: 2379*/}}
+{{/*      protocol: tcp*/}}
+{{/*    - port: 2380*/}}
+{{/*      protocol: tcp*/}}
+{{/*    - port: 5473*/}}
+{{/*      protocol: tcp*/}}
+{{/*    - port: 6443*/}}
+{{/*      protocol: tcp*/}}
+{{/*    - port: 6666*/}}
+{{/*      protocol: tcp*/}}
+{{/*    - port: 6667*/}}
+{{/*      protocol: tcp*/}}
+{{/*  logSeverityScreen: Info*/}}
+{{/*  reportingInterval: 0s*/}}

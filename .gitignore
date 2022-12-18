@@ -5,3 +5,4 @@
 defaults.terraform.tfvars
 terraform.tfstate*
 .id_rsa
+.id_rsa.pub

@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+echo not implemented yet
+exit 1
+
 if [ "${1}" == "" ]; then
     echo "Usage: bin/allow_ip.sh <LABEL> [IP]"
     echo "  LABEL: A short label without special chars or spaces, to identify the IP in the firewall rule, will be used as a configmap key and env var"

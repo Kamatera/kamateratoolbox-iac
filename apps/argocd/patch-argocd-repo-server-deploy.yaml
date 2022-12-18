@@ -7,27 +7,28 @@ spec:
     spec:
       containers:
       - name: argocd-repo-server
-        # built from docker/argocd_plugin on Dec 13, 2022
-        image: ghcr.io/kamatera/kamateratoolbox-iac-argocd-plugin:e7ed7065326a1cdac1aa9961e237cfaf0c7bbc6a
+        # built from docker/argocd_plugin on Dec 18, 2022
+        image: ghcr.io/kamatera/kamateratoolbox-iac-argocd-plugin:c3dee9f715c3bad5e23c44367e7d7c8a7225bc52
         securityContext:
           readOnlyRootFilesystem: false
         env:
-        - name: AVP_DEBUG
-          value: "yes"
         - name: AVP_ROLE_ID
           valueFrom:
             secretKeyRef:
               name: argocd-vault-plugin-credentials
               key: AVP_ROLE_ID
+              optional: true
         - name: AVP_SECRET_ID
           valueFrom:
             secretKeyRef:
               name: argocd-vault-plugin-credentials
               key: AVP_SECRET_ID
+              optional: true
         - name: VAULT_ADDR
           valueFrom:
             secretKeyRef:
               name: argocd-vault-plugin-credentials
               key: VAULT_ADDR
+              optional: true
       automountServiceAccountToken: true
       serviceAccountName: argocd-server

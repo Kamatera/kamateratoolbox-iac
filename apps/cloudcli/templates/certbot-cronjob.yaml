@@ -20,7 +20,7 @@ spec:
                 - bash
                 - -c
                 - |
-                  certbot_.py "~iac:cloudcli_server_domain~" "~iac:letsencrypt_email~" --renew --html \
+                  certbot_.py {{ .Values.cloudcliServerDomain | quote }} {{ .Values.letsencryptEmail | quote }} --renew --html \
                     --ssl-secret-name=cloudcli-server-tls \
                     --ssl-secret-namespace=cloudcli
               env:

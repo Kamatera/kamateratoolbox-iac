@@ -102,7 +102,7 @@ def get_match_values(parsed_matches):
                 configmap, key = parsed_match['key'].split('//')
                 if configmap not in configmap_iac_data:
                     configmap_iac_data[configmap] = get_iac_data(configmap)
-                match_values[match] = configmap_iac_data[configmap].get(parsed_match['key'], '')
+                match_values[match] = configmap_iac_data[configmap].get(key, '')
             else:
                 if iac_data is None:
                     iac_data = get_iac_data()

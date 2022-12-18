@@ -1,1 +1,1 @@
-sshAccessPointPublicIp: "~iac:ssh_access_point_public_ip~"
+#sshAccessPointPublicIp: "~iac:ssh_access_point_public_ip~"

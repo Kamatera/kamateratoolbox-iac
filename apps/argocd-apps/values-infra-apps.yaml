@@ -95,3 +95,14 @@ infra_apps:
     path: apps/cluster-admin
   sourceVaultPluginHelmValueFiles:
   - values.yaml
+
+- name: jenkins
+  disableAutoSync: true
+  project: infra
+  destinationNamespace: jenkins
+  source:
+    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
+    targetRevision: main
+    path: apps/jenkins
+  sourceVaultPluginHelmValueFiles:
+  - values.yaml

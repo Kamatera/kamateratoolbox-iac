@@ -10,6 +10,7 @@ resource "cloudflare_record" "default_ingress_subdomains" {
     "grafana",
     "prometheus",
     "alertmanager",
+    "jenkins",
   ])
   zone_id = data.cloudflare_zone.default.id
   name = "${var.subdomain_prefix}-${each.value}"

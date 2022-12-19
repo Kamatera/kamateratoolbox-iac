@@ -1,0 +1,2 @@
+nfs_private_ip: "~iac:nfs_private_ip~"
+jenkinsHost: "~iac:subdomain_prefix~-jenkins.~iac:root_domain~"

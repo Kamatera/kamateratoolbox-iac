@@ -1,0 +1,73 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: build-cloudcli-binaries
+spec:
+  entrypoint: build
+  arguments:
+    parameters:
+      - name: GIT_REPO_URL
+        default: "https://github.com/cloudwm/cloudcli.git"
+      - name: GIT_BRANCH
+        default: "master"
+      - name: PUBLISH_BINARIES_VERSION
+        default: "v0.0.0"
+        description: |
+          If not empty - publish the binaries to be used as latest, stable cloudcli release.
+          Should match a GitHub release for https://github.com/cloudwm/cloudcli/releases with
+          the following format: v0.0.0
+  templates:
+    - name: build
+      container:
+        # We use this image because it contains all the dependencies we need
+        image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
+        env:
+          - name: GIT_REPO_URL
+            value: {{ "{{workflow.parameters.GIT_REPO_URL}}" | quote }}
+          - name: GIT_BRANCH
+            value: {{ "{{workflow.parameters.GIT_BRANCH}}" | quote }}
+          - name: PUBLISH_BINARIES_VERSION
+            value: {{ "{{workflow.parameters.PUBLISH_BINARIES_VERSION}}" | quote }}
+        envFrom:
+          - secretRef:
+              name: build-cloudcli-binaries
+        command:
+          - bash
+          - -c
+          - |
+            cd $(mktemp -d) &&\
+            echo "${SSH_PRIVATE_KEY_BASE64}" | base64 -d > .id_rsa &&\
+            chmod 400 .id_rsa &&\
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i .id_rsa root@$SSH_IP '
+              cd &&\
+              rm -rf cloudcli-build &&\
+              git clone --depth 1 --branch '"${GIT_BRANCH}"' '"${GIT_REPO_URL}"' cloudcli-build &&\
+              cd cloudcli-build &&\
+              export PUBLISH_BINARIES_VERSION='"${PUBLISH_BINARIES_VERSION}"' &&\
+              export BUILD_ENV_DOCKER_IMAGE_BASE_NAME=cloudcli-build &&\
+              export CLOUDCLI_BUILD_ENVIRONMENT_SKIP_DOCKER_PUSH=true &&\
+              export BUILD_ENV_DOCKER_IMAGE_TAG=latest &&\
+              export AWS_ACCESS_KEY_ID='"${AWS_ACCESS_KEY_ID}"' &&\
+              export AWS_SECRET_ACCESS_KEY='"${AWS_SECRET_ACCESS_KEY}"' &&\
+              export AWS_MAC_INSTANCE_AVAILABILITY_ZONE='"${AWS_MAC_INSTANCE_AVAILABILITY_ZONE}"' &&\
+              export AWS_MAC_INSTANCE_ID='"${AWS_MAC_INSTANCE_ID}"' &&\
+              export AWS_REGION='"${AWS_REGION}"' &&\
+              export AWS_MAC_PEM_KEY_PATH=.macpemkey &&\
+              echo '"${AWS_MAC_PEM_KEY_BASE64}"' | base64 -d > $AWS_MAC_PEM_KEY_PATH &&\
+              chmod 400 $AWS_MAC_PEM_KEY_PATH &&\
+              source bin/functions.sh &&\
+              build_all_binary_archives "${BUILD_ENV_DOCKER_IMAGE_BASE_NAME}" "${BUILD_ENV_DOCKER_IMAGE_TAG}" &&\
+              sign_mac_binaries cloudcli-darwin-amd64.tar.gz &&\
+              if [ "${PUBLISH_BINARIES_VERSION}" == "" ]; then
+                echo Skipping publishing binaries
+              else
+                echo Publishing binaries to version ${PUBLISH_BINARIES_VERSION} &&\
+                mkdir -p /mnt/storage/cloudcli/binaries/${PUBLISH_BINARIES_VERSION} &&\
+                mkdir -p /mnt/storage/cloudcli/binaries/latest &&\
+                cp -f *.tar.gz /mnt/storage/cloudcli/binaries/${PUBLISH_BINARIES_VERSION}/ &&\
+                cp -f *.zip /mnt/storage/cloudcli/binaries/${PUBLISH_BINARIES_VERSION}/ &&\
+                cp -f *.tar.gz /mnt/storage/cloudcli/binaries/latest/ &&\
+                cp -f *.zip /mnt/storage/cloudcli/binaries/latest/ &&\
+                echo "${PUBLISH_BINARIES_VERSION}" > /mnt/storage/cloudcli/binaries/LATEST_VERSION.txt
+              fi
+            '

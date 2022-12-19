@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: terminate-old-mac-hosts
+spec:
+  entrypoint: terminate
+  arguments:
+    parameters:
+      - name: GIT_REPO_URL
+        default: "https://github.com/cloudwm/cloudcli.git"
+      - name: GIT_BRANCH
+        default: "master"
+  templates:
+    - name: terminate
+      container:
+        # We use this image because it contains all the dependencies we need
+        image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
+        env:
+          - name: GIT_REPO_URL
+            value: {{ "{{workflow.parameters.GIT_REPO_URL}}" | quote }}
+          - name: GIT_BRANCH
+            value: {{ "{{workflow.parameters.GIT_BRANCH}}" | quote }}
+        envFrom:
+          - secretRef:
+              name: build-cloudcli-binaries
+        command:
+          - bash
+          - -c
+          - |
+            cd $(mktemp -d) &&\
+            echo "${SSH_PRIVATE_KEY_BASE64}" | base64 -d > .id_rsa &&\
+            chmod 400 .id_rsa &&\
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i .id_rsa root@$SSH_IP '
+              cd &&\
+              rm -rf cloudcli-terminate &&\
+              git clone --depth 1 --branch '"${GIT_BRANCH}"' '"${GIT_REPO_URL}"' cloudcli-terminate &&\
+              cd cloudcli-terminate &&\
+              export AWS_ACCESS_KEY_ID='"${AWS_ACCESS_KEY_ID}"' &&\
+              export AWS_SECRET_ACCESS_KEY='"${AWS_SECRET_ACCESS_KEY}"' &&\
+              export AWS_REGION='"${AWS_REGION}"' &&\
+              python3 bin/terminate_old_mac_hosts.py
+            '

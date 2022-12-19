@@ -5,3 +5,16 @@ minReplicas: 4
 maxReplicas: 15
 cloudcliServerDomain: "~iac:tf-outputs-cloudcli//cloudcli_server_domain~"
 letsencryptEmail: "~iac:letsencrypt_email~"
+nfs_private_ip: "~iac:nfs_private_ip~"
+
+secrets:
+- name: build-cloudcli-binaries
+  data:
+    AWS_ACCESS_KEY_ID: "~vault:cloudcli/build-env:AWS_ACCESS_KEY_ID~"
+    AWS_SECRET_ACCESS_KEY: "~vault:cloudcli/build-env:AWS_SECRET_ACCESS_KEY~"
+    AWS_REGION: "~vault:cloudcli/build-env:AWS_REGION~"
+    AWS_MAC_INSTANCE_AVAILABILITY_ZONE: "~vault:cloudcli/build-env:AWS_MAC_INSTANCE_AVAILABILITY_ZONE~"
+    AWS_MAC_INSTANCE_ID: "~vault:cloudcli/build-env:AWS_MAC_INSTANCE_ID~"
+    AWS_MAC_PEM_KEY_BASE64: "~vault:cloudcli/build-env:AWS_MAC_PEM_KEY_BASE64~"
+    SSH_IP: "~vault:cloudcli/build-env:SSH_IP~"
+    SSH_PRIVATE_KEY_BASE64: "~vault:cloudcli/build-env:SSH_PRIVATE_KEY_BASE64~"

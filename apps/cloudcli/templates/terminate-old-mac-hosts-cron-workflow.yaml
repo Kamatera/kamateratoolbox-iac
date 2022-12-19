@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: terminate-old-mac-hosts
+spec:
+  schedule: "0 * * * *"
+  workflowSpec:
+    arguments:
+      parameters:
+        - name: GIT_REPO_URL
+          value: "https://github.com/cloudwm/cloudcli.git"
+        - name: GIT_BRANCH
+          value: "master"
+    workflowTemplateRef:
+      name: terminate-old-mac-hosts

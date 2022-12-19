@@ -4,6 +4,9 @@ certbot_image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb
 minReplicas: 4
 maxReplicas: 15
 cloudcliServerDomain: "~iac:tf-outputs-cloudcli//cloudcli_server_domain~"
+cloudcliServerHosts:
+  - "~iac:tf-outputs-cloudcli//cloudcli_server_domain~"
+  - cloudcli.cloudwm.com
 letsencryptEmail: "~iac:letsencrypt_email~"
 nfs_private_ip: "~iac:nfs_private_ip~"
 

@@ -8,8 +8,12 @@ spec:
     - hosts:
         - {{ .Values.cloudcliServerDomain | quote }}
       secretName: cloudcli-server-tls
+    - hosts:
+        - cloudcli.cloudwm.com
+      secretName: cloudcli-legacy-server-tls
   rules:
-    - host: {{ .Values.cloudcliServerDomain | quote }}
+    {{- range .Values.cloudcliServerHosts }}
+    - host: {{ . | quote }}
       http:
         paths:
           - path: /.well-known
@@ -33,3 +37,4 @@ spec:
                 name: cloudcli-server
                 port:
                   number: 80
+    {{- end }}

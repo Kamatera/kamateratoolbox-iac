@@ -96,17 +96,6 @@ infra_apps:
   sourceVaultPluginHelmValueFiles:
   - values.yaml
 
-- name: jenkins
-  disableAutoSync: true
-  project: infra
-  destinationNamespace: jenkins
-  source:
-    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
-    path: apps/jenkins
-  sourceVaultPluginHelmValueFiles:
-  - values.yaml
-
 - name: argoworkflows-manifests
   disableAutoSync: true
   project: infra
@@ -115,7 +104,6 @@ infra_apps:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
     targetRevision: main
     path: apps/argoworkflows/manifests
-
 
 - name: argoworkflows
   disableAutoSync: true

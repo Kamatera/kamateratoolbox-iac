@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: build-cloudcli-binaries
+spec:
+  templates:
+    - name: build
+      inputs:
+        parameters:
+          - name: world
+      container:
+        # We use this image because it contains all the dependencies we need
+        image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
+        command:
+          - bash
+          - -c
+          - |
+            echo hello {{inputs.parameters.world}}

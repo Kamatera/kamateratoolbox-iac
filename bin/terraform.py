@@ -12,7 +12,7 @@ TF_VAR_backend_conn_str = os.environ.get('TF_VAR_backend_conn_str')
 HELP = '''
 Run terraform commands in the current environment (as specified via bin/login.py).
 
-Usage: bin/terraform.py [--help] <command> [args] [--init] [--module=<module>]
+Usage: bin/terraform.py [--help] <command> [args] [--init] [--module=<module>] [--root-environment]
 '''.strip()
 
 
@@ -70,7 +70,7 @@ def main(command, *args):
             'python3', 'bin/terraform.py', 'init'
         ])
     path = os.path.join('environments', TF_VAR_environment_name)
-    if get_sub_environment_name():
+    if get_sub_environment_name() and not opts.get('root-environment'):
         path = os.path.join(path, get_sub_environment_name())
     if command == 'init':
         assert not opts.get('module')

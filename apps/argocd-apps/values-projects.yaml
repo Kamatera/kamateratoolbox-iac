@@ -33,6 +33,9 @@ projects:
         - name: '*'
           namespace: jenkins
           server: 'https://kubernetes.default.svc'
+        - name: '*'
+          namespace: argo
+          server: 'https://kubernetes.default.svc'
       sourceRepos:
         - https://github.com/Kamatera/kamateratoolbox-iac.git
         - https://github.com/prometheus-community/helm-charts.git

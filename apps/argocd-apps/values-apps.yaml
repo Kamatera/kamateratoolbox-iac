@@ -1,7 +1,7 @@
 apps:
 
 - name: cloudcli
-  disableAutoSync: false
+  disableAutoSync: true
   project: cloudcli
   destinationNamespace: cloudcli
   source:

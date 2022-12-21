@@ -7,8 +7,7 @@ spec:
   tls:
     - hosts:
         - {{ .Values.cloudcliServerDomain | quote }}
-      secretName: cloudcli-legacy-server-tls
-      # secretName: cloudcli-server-tls
+      secretName: cloudcli-server-tls
   rules:
     - host: {{ .Values.cloudcliServerDomain | quote }}
       http:

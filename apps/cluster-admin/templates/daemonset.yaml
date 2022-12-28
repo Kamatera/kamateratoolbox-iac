@@ -43,57 +43,53 @@ spec:
           volumeMounts:
             - name: hostssh
               mountPath: /hostssh
-{{/*        - name: firewall*/}}
-{{/*          # Built from docker/certbot on Dec 11, 2022*/}}
-{{/*          # We use this image because it contains the dependencies we need*/}}
-{{/*          image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc*/}}
-{{/*          command:*/}}
-{{/*            - bash*/}}
-{{/*            - -c*/}}
-{{/*            - |*/}}
-{{/*              FORCE_RELOAD_DAEMONSET=no*/}}
-{{/*              if ! kubectl get -n cluster-admin configmap allowed-ips -o json | grep "ALLOWED_IP" | grep '"'${HOST_IP}'"'; then*/}}
-{{/*                echo "Adding ${HOST_IP} to allowed-ips configmap"*/}}
-{{/*                kubectl patch configmap/allowed-ips -n cluster-admin --type merge \*/}}
-{{/*                  -p '{"data":{"'ALLOWED_IP_${HOST_IP}'":"'${HOST_IP}'"}}'*/}}
-{{/*                FORCE_RELOAD_DAEMONSET=yes*/}}
-{{/*              fi*/}}
-{{/*              cp /opt/secret/sshapprivatekey /opt/id_rsa &&\*/}}
-{{/*              chmod 400 /opt/id_rsa &&\*/}}
-{{/*              SSH="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i /opt/id_rsa root@$HOST_IP"*/}}
-{{/*              $SSH '*/}}
-{{/*                ufw --force reset &&\*/}}
-{{/*                ufw default allow outgoing &&\*/}}
-{{/*                ufw default deny incoming &&\*/}}
-{{/*                ufw default deny routed &&\*/}}
-{{/*                ufw allow in on eth1*/}}
-{{/*              '*/}}
-{{/*              for e in $(env); do*/}}
-{{/*                if [[ $e =~ ^ALLOWED_IP_ ]]; then*/}}
-{{/*                    $SSH "ufw allow in from $(echo $e | cut -d= -f2) to any"*/}}
-{{/*                fi*/}}
-{{/*              done &&\*/}}
-{{/*              $SSH '*/}}
-{{/*                ufw --force enable &&\*/}}
-{{/*                ufw status verbose*/}}
-{{/*              '*/}}
-{{/*              if [ "${FORCE_RELOAD_DAEMONSET}" == "yes" ]; then*/}}
-{{/*                echo "Forcing reload of cluster-admin daemonset"*/}}
-{{/*                kubectl patch daemonset/cluster-admin -n cluster-admin --type merge \*/}}
-{{/*                  -p '{"spec":{"template":{"metadata":{"labels":{"date":"'"$(date +%s)"'"}}}}}'*/}}
-{{/*              fi*/}}
-{{/*          env:*/}}
-{{/*            - name: HOST_IP*/}}
-{{/*              valueFrom:*/}}
-{{/*                fieldRef:*/}}
-{{/*                  fieldPath: status.hostIP*/}}
-{{/*          envFrom:*/}}
-{{/*            - configMapRef:*/}}
-{{/*                name: allowed-ips*/}}
-{{/*          volumeMounts:*/}}
-{{/*            - name: revoke-ips*/}}
-{{/*              mountPath: /opt/secret*/}}
-{{/*      serviceAccountName: revoke-ips*/}}
+        - name: sshd
+          # Built from docker/certbot on Dec 11, 2022
+          # We use this image because it contains the dependencies we need
+          image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
+          command:
+            - bash
+            - -c
+            - |
+              if ! [ -f /mnt/host/etc/ssh/sshd_config.d/00-listen-internal.conf ]; then
+                CONF=/mnt/host/root/guest.conf
+                INTERNAL_IP="$(cat $CONF | grep "ip$(cat $CONF | grep vlan | grep -v "[0-9]=wan-" | cut -d"=" -f1 | cut -dn -f2)=" | cut -d= -f2)" &&\
+                echo $INTERNAL_IP &&\
+                echo INTERNAL_IP=$INTERNAL_IP &&\
+                echo $EXTERNAL_IP &&\
+                echo EXTERNAL_IP=$EXTERNAL_IP &&\
+                if [ -z "$INTERNAL_IP" ] || [ -z "$EXTERNAL_IP" ] || [ "$INTERNAL_IP" == "$EXTERNAL_IP" ]; then
+                  echo failed to get internal or external ips && exit 1
+                fi &&\
+                TEMPFILE="$(mktemp)" &&\
+                cp /mnt/ssh-access-point/privatekey $TEMPFILE &&\
+                chmod 400 $TEMPFILE &&\
+                SSH="ssh -i $TEMPFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" &&\
+                INTERNAL_HOSTNAME="$($SSH root@$INTERNAL_IP hostname)" &&\
+                echo INTERNAL_HOSTNAME=$INTERNAL_HOSTNAME &&\
+                EXTERNAL_HOSTNAME="$($SSH root@$EXTERNAL_IP hostname)" &&\
+                echo EXTERNAL_HOSTNAME=$EXTERNAL_HOSTNAME &&\
+                if [ -z "$INTERNAL_HOSTNAME" ] || [ -z "$EXTERNAL_HOSTNAME" ]; then
+                  echo failed to get internal or external hostnames && exit 1
+                fi &&\
+                if [ "$INTERNAL_HOSTNAME" != "$EXTERNAL_HOSTNAME" ]; then
+                  echo internal and external hostnames do not match && exit 1
+                fi &&\
+                $SSH root@$INTERNAL_IP "
+                  echo ListenAddress $INTERNAL_IP > /etc/ssh/sshd_config.d/00-listen-internal.conf &&\
+                  systemctl reload sshd
+                "
+              fi
+          env:
+            - name: EXTERNAL_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          volumeMounts:
+            - name: host
+              mountPath: /mnt/host
+            - name: ssh-access-point
+              mountPath: /mnt/ssh-access-point
       containers:
         - name: pause
           image: k8s.gcr.io/pause:3.2
@@ -101,6 +97,9 @@ spec:
         - name: hostssh
           hostPath:
             path: /root/.ssh
-{{/*        - name: revoke-ips*/}}
-{{/*          secret:*/}}
-{{/*            secretName: revoke-ips*/}}
+        - name: host
+          hostPath:
+            path: /
+        - name: ssh-access-point
+          secret:
+            secretName: ssh-access-point

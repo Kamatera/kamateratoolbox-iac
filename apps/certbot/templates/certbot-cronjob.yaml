@@ -20,7 +20,7 @@ spec:
                 - bash
                 - -c
                 - |
-                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew
+                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew --ssl-secret-name=default-ssl-certificate
               env:
                 - name: CLOUDFLARE_API_TOKEN
                   valueFrom:

@@ -3,6 +3,7 @@ import os
 import sys
 import json
 import base64
+import tempfile
 import itertools
 import traceback
 import subprocess
@@ -78,10 +79,14 @@ def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew
             'kubectl', '-n', 'ingress-nginx', 'rollout', 'restart', 'daemonset', 'nginx-ingress-controller'
         ])
         if rancher_private_ip:
-            sshargs = ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
-            subprocess.check_call([
-                'ssh', *sshargs, '-i', '/ssh-access-point/privatekey', f'root@{rancher_private_ip}', 'docker restart rancher'
-            ])
+            with tempfile.TemporaryDirectory() as tmpdir:
+                subprocess.check_call(['cp', '/ssh-access-point/privatekey', os.path.join(tmpdir, '/privatekey')])
+                subprocess.check_call(['chmod', '600', os.path.join(tmpdir, '/privatekey')])
+                subprocess.check_call([
+                    'ssh', "-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null",
+                    '-i', os.path.join(tmpdir, '/privatekey'),
+                    f'root@{rancher_private_ip}', 'docker restart rancher'
+                ])
 
 
 def get_certificate_expiry_days(secret_name, secret_namespace):

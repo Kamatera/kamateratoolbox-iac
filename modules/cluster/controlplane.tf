@@ -23,4 +23,7 @@ resource "kamatera_server" "controlplane" {
   network {
     name = "wan"
   }
+  lifecycle {
+    ignore_changes = [startup_script]
+  }
 }

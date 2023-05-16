@@ -33,7 +33,7 @@ def register_wildcard_dns(root_domain, letsencrypt_email, additional_domains):
     ])
 
 
-def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html, additional_domains, has_letsencrypt_data, skip_kubectl):
+def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html, additional_domains, has_letsencrypt_data, skip_kubectl, rancher_private_ip=None):
     if has_letsencrypt_data and renew:
         subprocess.check_call(['certbot', 'renew'])
         print("Successful renewal using certbot")
@@ -70,6 +70,24 @@ def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew
             '--cert', f'{certs_path}/fullchain.pem',
             '--key', f'{certs_path}/privkey.pem'
         ])
+        subprocess.check_call([
+            'kubectl', '-n', 'ingress-nginx', 'rollout', 'restart', 'daemonset', 'nginx-ingress-controller'
+        ])
+        sshargs = ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
+        subprocess.check_call([
+            "ssh", *sshargs, "-i", '/ssh-access-point/privatekey', f"root@{ssh_access_point_public_ip}", dedent(f'''
+                        for SERVER in cloudcli-rancher cloudcli-nfs; do
+                            echo revoking ips from $SERVER &&\
+                            for IP in {' '.join(revoke_ips.values())} ; do
+                                ssh {' '.join(sshargs)} root@$SERVER ufw delete allow in from $IP to any
+                            done
+                        done
+                    ''')
+        ])
+        if rancher_private_ip:
+            subprocess.check_call([
+                'ssh', '-i', '/ssh-access-point/privatekey', f'root@{rancher_private_ip}', 'docker restart rancher'
+            ])
 
 
 def get_certificate_expiry_days(secret_name, secret_namespace):
@@ -94,6 +112,7 @@ def main(root_domain, letsencrypt_email, *args):
     secret_name = "cloudcli-default-ssl"
     secret_namespace = "ingress-nginx"
     additional_domains = []
+    rancher_private_ip = None
     for arg in args:
         if arg.startswith("--ssl-secret-name="):
             secret_name = arg.split("=")[1]
@@ -101,6 +120,8 @@ def main(root_domain, letsencrypt_email, *args):
             secret_namespace = arg.split("=")[1]
         elif arg.startswith("--additional-domain="):
             additional_domains.append(arg.split("=")[1])
+        elif arg.startswith('--rancher-private-ip='):
+            rancher_private_ip = arg.split("=")[1]
     has_letsencrypt_data = os.path.exists(f'/etc/letsencrypt/live/{root_domain}')
     if skip_kubectl:
         print(f"Updating domain {root_domain} without kubectl")
@@ -118,11 +139,11 @@ def main(root_domain, letsencrypt_email, *args):
             exit(0)
         process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=True, html=html,
                 additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data,
-                skip_kubectl=skip_kubectl)
+                skip_kubectl=skip_kubectl, rancher_private_ip=rancher_private_ip)
     else:
         process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=renew, html=html,
                 additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data,
-                skip_kubectl=skip_kubectl)
+                skip_kubectl=skip_kubectl, rancher_private_ip=rancher_private_ip)
 
 
 if __name__ == '__main__':

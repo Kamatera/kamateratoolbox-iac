@@ -3,6 +3,7 @@ variable "root_domain" {}
 variable "subdomain_prefix" {}
 variable "ingress_hostname" {}
 variable "rancher_public_ip" {}
+variable "rancher_private_ip" {}
 variable "ssh_private_key_file" {}
 variable "default_ssl_certificate_secret_name" {}
 variable "cluster_context" {}

@@ -55,6 +55,7 @@ module "apps" {
   cluster_context = module.cluster.cluster_context
   ingress_hostname = module.cluster.ingress_hostname
   rancher_public_ip = module.rancher.public_ip
+  rancher_private_ip = module.rancher.private_ip
   ssh_private_key_file = var.ssh_private_key_file
   default_ssl_certificate_secret_name = local.default_ssl_certificate_secret_name
   nfs_private_ip = module.nfs.private_ip

@@ -77,20 +77,10 @@ def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew
         subprocess.check_call([
             'kubectl', '-n', 'ingress-nginx', 'rollout', 'restart', 'daemonset', 'nginx-ingress-controller'
         ])
-        sshargs = ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
-        subprocess.check_call([
-            "ssh", *sshargs, "-i", '/ssh-access-point/privatekey', f"root@{ssh_access_point_public_ip}", dedent(f'''
-                        for SERVER in cloudcli-rancher cloudcli-nfs; do
-                            echo revoking ips from $SERVER &&\
-                            for IP in {' '.join(revoke_ips.values())} ; do
-                                ssh {' '.join(sshargs)} root@$SERVER ufw delete allow in from $IP to any
-                            done
-                        done
-                    ''')
-        ])
         if rancher_private_ip:
+            sshargs = ["-o", "StrictHostKeyChecking=no", "-o", "UserKnownHostsFile=/dev/null"]
             subprocess.check_call([
-                'ssh', '-i', '/ssh-access-point/privatekey', f'root@{rancher_private_ip}', 'docker restart rancher'
+                'ssh', *sshargs, '-i', '/ssh-access-point/privatekey', f'root@{rancher_private_ip}', 'docker restart rancher'
             ])
 
 

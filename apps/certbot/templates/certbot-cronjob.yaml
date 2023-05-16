@@ -20,7 +20,7 @@ spec:
                 - bash
                 - -c
                 - |
-                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew --ssl-secret-name=default-ssl-certificate
+                  certbot_.py "{{ .Values.root_domain }}" "{{ .Values.letsencrypt_email }}" --renew --ssl-secret-name=default-ssl-certificate "--rancher-private-ip={{ .Values.rancher_private_ip }}"
               env:
                 - name: CLOUDFLARE_API_TOKEN
                   valueFrom:
@@ -34,8 +34,14 @@ spec:
                 - name: certbot
                   mountPath: /var/lib/letsencrypt
                   subPath: var_lib_letsencrypt
+                - name: ssh-access-point
+                  mountPath: /ssh-access-point
+                  readOnly: true
           volumes:
             - name: certbot
               nfs:
                 path: /storage/certbot-{{ .Values.root_domain }}
                 server: {{ .Values.nfs_private_ip }}
+            - name: ssh-access-point
+              secret:
+                secretName: ssh-access-point

@@ -33,7 +33,8 @@ def register_wildcard_dns(root_domain, letsencrypt_email, additional_domains):
     ])
 
 
-def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html, additional_domains, has_letsencrypt_data, skip_kubectl, rancher_private_ip=None):
+def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html, additional_domains, has_letsencrypt_data,
+            skip_kubectl, rancher_private_ip=None, force_recreate=False):
     if has_letsencrypt_data and renew:
         subprocess.check_call(['certbot', 'renew'])
         print("Successful renewal using certbot")
@@ -61,7 +62,10 @@ def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew
                     and base64.b64decode(data['tls.key'].encode()).decode().strip() == key.strip()
                 ):
                     print("No change to secret")
-                    return
+                    if force_recreate:
+                        print("Forcing recreation of secret")
+                    else:
+                        return
                 subprocess.check_call([
                     'kubectl', '-n', secret_namespace, 'delete', 'secret', secret_name,
                 ])
@@ -113,6 +117,7 @@ def main(root_domain, letsencrypt_email, *args):
     secret_namespace = "ingress-nginx"
     additional_domains = []
     rancher_private_ip = None
+    force_recreate = "--force-recreate" in args
     for arg in args:
         if arg.startswith("--ssl-secret-name="):
             secret_name = arg.split("=")[1]
@@ -139,11 +144,11 @@ def main(root_domain, letsencrypt_email, *args):
             exit(0)
         process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=True, html=html,
                 additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data,
-                skip_kubectl=skip_kubectl, rancher_private_ip=rancher_private_ip)
+                skip_kubectl=skip_kubectl, rancher_private_ip=rancher_private_ip, force_recreate=force_recreate)
     else:
         process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew=renew, html=html,
                 additional_domains=additional_domains, has_letsencrypt_data=has_letsencrypt_data,
-                skip_kubectl=skip_kubectl, rancher_private_ip=rancher_private_ip)
+                skip_kubectl=skip_kubectl, rancher_private_ip=rancher_private_ip, force_recreate=force_recreate)
 
 
 if __name__ == '__main__':

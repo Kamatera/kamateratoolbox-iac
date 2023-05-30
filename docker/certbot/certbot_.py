@@ -37,7 +37,7 @@ def register_wildcard_dns(root_domain, letsencrypt_email, additional_domains):
 def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html, additional_domains, has_letsencrypt_data,
             skip_kubectl, rancher_private_ip=None, force_recreate=False):
     if has_letsencrypt_data and renew:
-        subprocess.check_call(['certbot', 'renew'])
+        subprocess.check_call(['certbot', 'renew', *(['--force-renewal'] if force_recreate else [])])
         print("Successful renewal using certbot")
     elif html:
         register_html(root_domain, letsencrypt_email)

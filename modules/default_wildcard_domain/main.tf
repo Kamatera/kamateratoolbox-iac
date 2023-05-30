@@ -6,6 +6,9 @@ terraform {
     rancher2 = {
       source  = "rancher/rancher2"
     }
+    statuscake = {
+      source = "StatusCakeDev/statuscake"
+    }
   }
 }
 

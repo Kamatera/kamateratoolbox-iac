@@ -1,4 +1,4 @@
-certbot_image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:7d2219303eebbba54279d9b65129794766b1615c
+certbot_image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:2bde581c320cb02e81c86a202762b6153a02d3eb
 root_domain: "~iac:root_domain~"
 letsencrypt_email: "~iac:letsencrypt_email~"
 nfs_private_ip: "~iac:nfs_private_ip~"

@@ -10,6 +10,9 @@ import subprocess
 from textwrap import dedent
 
 
+CLOUDFLARE_CREDENTIALS_INI = '/etc/letsencrypt/cloudflare.ini'
+
+
 def register_html(domain_name, letsencrypt_email):
     subprocess.check_call([
         'certbot', 'certonly', '-d', domain_name,
@@ -18,17 +21,19 @@ def register_html(domain_name, letsencrypt_email):
     ])
 
 
-def register_wildcard_dns(root_domain, letsencrypt_email, additional_domains):
-    cloudflare_credentials_ini = '/etc/letsencrypt/cloudflare.ini'
-    with open(cloudflare_credentials_ini, 'w') as f:
+def update_cloudflare_credentials():
+    with open(CLOUDFLARE_CREDENTIALS_INI, 'w') as f:
         f.write(dedent(f'''\
-                dns_cloudflare_api_token = {os.environ['CLOUDFLARE_API_TOKEN']}
-        ''').strip())
-    subprocess.check_call(['chmod', '400', cloudflare_credentials_ini])
+                    dns_cloudflare_api_token = {os.environ['CLOUDFLARE_API_TOKEN']}
+            ''').strip())
+    subprocess.check_call(['chmod', '400', CLOUDFLARE_CREDENTIALS_INI])
+
+
+def register_wildcard_dns(root_domain, letsencrypt_email, additional_domains):
     subprocess.check_call([
         'certbot', 'certonly', '-d', f'*.{root_domain}',
         *list(itertools.chain(*[['-d', d] for d in additional_domains])),
-        '--dns-cloudflare', '--dns-cloudflare-credentials', cloudflare_credentials_ini,
+        '--dns-cloudflare', '--dns-cloudflare-credentials', CLOUDFLARE_CREDENTIALS_INI,
         '--preferred-challenges', 'dns',
         '-m', letsencrypt_email, '--agree-tos', '-n',
     ])
@@ -36,6 +41,7 @@ def register_wildcard_dns(root_domain, letsencrypt_email, additional_domains):
 
 def process(root_domain, letsencrypt_email, secret_name, secret_namespace, renew, html, additional_domains, has_letsencrypt_data,
             skip_kubectl, rancher_private_ip=None, force_recreate=False):
+    update_cloudflare_credentials()
     if has_letsencrypt_data and renew:
         subprocess.check_call(['certbot', 'renew', *(['--force-renewal'] if force_recreate else [])])
         print("Successful renewal using certbot")

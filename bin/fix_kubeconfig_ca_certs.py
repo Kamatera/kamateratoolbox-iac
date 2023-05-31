@@ -7,6 +7,10 @@ The script outputs a new kubeconfig file with the ca-certs replaced.
 Following requirements are needed:
 - python3.8+
 - pip install pyOpenSSL==23.2.0 cryptography==39.0.1 ruamel.yaml==0.17.30
+
+Author: Ori Hoch (github.com/OriHoch)
+LICENSE: MIT (https://github.com/Kamatera/kamateratoolbox-iac/blob/main/LICENSE)
+Script source: https://github.com/Kamatera/kamateratoolbox-iac/blob/main/bin/fix_kubeconfig_ca_certs.py
 """
 import os
 import sys

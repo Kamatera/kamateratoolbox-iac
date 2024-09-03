@@ -3,9 +3,9 @@ kind: Ingress
 metadata:
   name: cloudcli-server
   annotations:
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "10"  # default = 5
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"  # default = 60
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"  # default = 60
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "20"  # default = 5
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "240"  # default = 60
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "240"  # default = 60
 spec:
   ingressClassName: nginx
   tls:

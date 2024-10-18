@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: cloudcli-k8s
 spec:
-  replicas: 1
+  replicas: {{ .Values.k8s.replicas }}
   selector:
     matchLabels:
       app: cloudcli-k8s
@@ -15,10 +15,5 @@ spec:
       terminationGracePeriodSeconds: 240
       containers:
       - name: cloudcli-k8s
-        image: ghcr.io/kamatera/cloudcli-server-kubernetes:70b372165bf6484ae3394bf83123113cabadf12e
-        resources:
-          requests:
-            cpu: 200m
-            memory: 512Mi
-          limits:
-            memory: 1024Mi
+        image: ghcr.io/kamatera/cloudcli-server-kubernetes:{{ .Values.k8s.version }}
+        resources: {{ toYaml .Values.k8s.resources | nindent 10 }}

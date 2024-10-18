@@ -7,6 +7,17 @@ cloudcliServerDomain: "cloudcli.cloudwm.com"
 letsencryptEmail: "~iac:letsencrypt_email~"
 nfs_private_ip: "~iac:nfs_private_ip~"
 
+k8s:
+  # version is the git hash from Kamatera/cloudcli-server-kubernetes repo
+  version: 3094b114c1593c0a448e667bdfa1bced2cef9551
+  replicas: 1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      memory: 1024Mi
+
 secrets:
 - name: build-cloudcli-binaries
   data:

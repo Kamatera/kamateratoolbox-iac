@@ -15,7 +15,7 @@ spec:
       terminationGracePeriodSeconds: 240
       containers:
       - name: cloudcli-k8s
-        image: ghcr.io/kamatera/cloudcli-server-kubernetes:58aaa16e084a913719ea552f372d182479b2030f
+        image: ghcr.io/kamatera/cloudcli-server-kubernetes:70b372165bf6484ae3394bf83123113cabadf12e
         resources:
           requests:
             cpu: 200m

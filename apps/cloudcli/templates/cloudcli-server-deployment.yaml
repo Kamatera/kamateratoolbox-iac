@@ -12,7 +12,7 @@ spec:
       labels:
         app: cloudcli-server
     spec:
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: 240
       containers:
       - name: cloudcli-server
         image: {{ .Values.image }}

@@ -30,6 +30,13 @@ spec:
                 name: binaries-nginx
                 port:
                   number: 80
+          - path: /k8s
+            pathType: Prefix
+            backend:
+              service:
+                name: cloudcli-k8s
+                port:
+                  number: 8080
           - path: /
             pathType: Prefix
             backend:

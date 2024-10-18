@@ -9,7 +9,7 @@ nfs_private_ip: "~iac:nfs_private_ip~"
 
 k8s:
   # version is the git hash from Kamatera/cloudcli-server-kubernetes repo
-  version: 1faf91a426e6a49cb99a0a8114a2880cc6bd737c
+  version: 65665e66cfc69dc7a7673082844846ed6825c8c4
   replicas: 5
   resources:
     requests:

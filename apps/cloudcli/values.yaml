@@ -10,13 +10,13 @@ nfs_private_ip: "~iac:nfs_private_ip~"
 k8s:
   # version is the git hash from Kamatera/cloudcli-server-kubernetes repo
   version: 1faf91a426e6a49cb99a0a8114a2880cc6bd737c
-  replicas: 1
+  replicas: 5
   resources:
     requests:
       cpu: 200m
-      memory: 512Mi
+      memory: 256Mi
     limits:
-      memory: 1024Mi
+      memory: 500Mi
 
 secrets:
 - name: build-cloudcli-binaries

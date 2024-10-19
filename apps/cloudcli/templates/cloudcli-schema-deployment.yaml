@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudcli-schema
+spec:
+  selector:
+    matchLabels:
+      app: cloudcli-schema
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cloudcli-schema
+    spec:
+      terminationGracePeriodSeconds: 2
+      containers:
+        - name: nginx
+          # Pulled Oct 19, 2024
+          image: nginx@sha256:28402db69fec7c17e179ea87882667f1e054391138f77ffaf0c3eb388efc3ffb
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          volumeMounts:
+            - name: conf
+              mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: conf
+          configMap:
+            name: cloudcli-schema-nginx-conf

@@ -21,6 +21,8 @@ spec:
           value: https://console.kamatera.com
         - name: CLOUDCLI_PROVIDER
           value: proxy
+        - name: K8S_OPENAPI_SCHEMA_URL
+          value: http://cloudcli-k8s:8080/k8s/openapi.json
         resources:
           requests:
             cpu: 1000m

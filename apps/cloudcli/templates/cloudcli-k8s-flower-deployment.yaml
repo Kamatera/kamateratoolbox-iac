@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudcli-k8s-flower
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cloudcli-k8s-flower
+  template:
+    metadata:
+      labels:
+        app: cloudcli-k8s-flower
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: cloudcli-k8s-flower
+        image: ghcr.io/kamatera/cloudcli-server-kubernetes:{{ .Values.k8s.version }}
+        command: ["celery", "-A", "cloudcli_server_kubernetes.celery", "flower", "--loglevel=info"]
+        envFrom:
+        - secretRef:
+            name: cloudcli-k8s-celery
+        resources: {{ toYaml .Values.k8s.flower.resources | nindent 10 }}
+        ports:
+          - containerPort: 5555

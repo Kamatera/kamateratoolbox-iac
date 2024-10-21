@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudcli-k8s-worker
+spec:
+  replicas: {{ .Values.k8s.worker.replicas }}
+  selector:
+    matchLabels:
+      app: cloudcli-k8s-worker
+  template:
+    metadata:
+      labels:
+        app: cloudcli-k8s-worker
+    spec:
+      terminationGracePeriodSeconds: {{ .Values.k8s.worker.terminationGracePeriodSeconds }}
+      containers:
+      - name: cloudcli-k8s-worker
+        image: ghcr.io/kamatera/cloudcli-server-kubernetes:{{ .Values.k8s.version }}
+        command: ["celery", "-A", "cloudcli_server_kubernetes.celery", "worker", "--loglevel=info"]
+        envFrom:
+        - secretRef:
+            name: cloudcli-k8s-celery
+        resources: {{ toYaml .Values.k8s.worker.resources | nindent 10 }}

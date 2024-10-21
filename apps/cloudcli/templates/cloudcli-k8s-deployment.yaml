@@ -17,3 +17,5 @@ spec:
       - name: cloudcli-k8s
         image: ghcr.io/kamatera/cloudcli-server-kubernetes:{{ .Values.k8s.version }}
         resources: {{ toYaml .Values.k8s.resources | nindent 10 }}
+        ports:
+          - containerPort: 8000

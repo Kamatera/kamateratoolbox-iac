@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudcli-k8s-scheduler
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cloudcli-k8s-scheduler
+  template:
+    metadata:
+      labels:
+        app: cloudcli-k8s-scheduler
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: cloudcli-k8s-scheduler
+        image: ghcr.io/kamatera/cloudcli-server-kubernetes:{{ .Values.k8s.version }}
+        command: ["celery", "-A", "cloudcli_server_kubernetes.celery", "beat", "--loglevel=info"]
+        envFrom:
+        - secretRef:
+            name: cloudcli-k8s-celery
+        resources: {{ toYaml .Values.k8s.scheduler.resources | nindent 10 }}

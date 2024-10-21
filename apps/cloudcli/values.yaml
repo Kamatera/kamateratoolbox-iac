@@ -9,7 +9,7 @@ nfs_private_ip: "~iac:nfs_private_ip~"
 
 k8s:
   # version is the git hash from Kamatera/cloudcli-server-kubernetes repo
-  version: ec2536950c446a8296c9bfe8eabcad66e7ee4db5
+  version: c159cf7e541c2655a180e8f10b27aa29b255a7ee
   replicas: 5
   resources:
     requests:
@@ -17,6 +17,43 @@ k8s:
       memory: 256Mi
     limits:
       memory: 500Mi
+  worker:
+    replicas: 2
+    terminationGracePeriodSeconds: 3600
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        memory: 500Mi
+  scheduler:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        memory: 500Mi
+  flower:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        memory: 500Mi
+  db:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        memory: 500Mi
+  rabbitmq:
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        memory: 500Mi
 
 secrets:
 - name: build-cloudcli-binaries
@@ -29,3 +66,8 @@ secrets:
     AWS_MAC_PEM_KEY_BASE64: "~vault:cloudcli/build-env:AWS_MAC_PEM_KEY_BASE64~"
     SSH_IP: "~vault:cloudcli/build-env:SSH_IP~"
     SSH_PRIVATE_KEY_BASE64: "~vault:cloudcli/build-env:SSH_PRIVATE_KEY_BASE64~"
+- name: cloudcli-k8s-celery
+  data:
+    POSTGRES_PASSWORD: "~vault:cloudcli/celery:POSTGRES_PASSWORD~"
+    CELERY_RESULT_BACKEND: "~vault:cloudcli/celery:CELERY_RESULT_BACKEND~"
+    CELERY_BROKER: "~vault:cloudcli/celery:CELERY_BROKER~"

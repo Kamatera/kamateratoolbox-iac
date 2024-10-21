@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudcli-k8s-db
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cloudcli-k8s-db
+  template:
+    metadata:
+      labels:
+        app: cloudcli-k8s-db
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: cloudcli-k8s-db
+        # Pulled Oct 20, 2024
+        image: postgres:16@sha256:91f464e7ba0ad91a106c94cff079fb4384139291b8c0502fd36989cf2c788bbb
+        envFrom:
+        - secretRef:
+            name: cloudcli-k8s-celery
+        resources: {{ toYaml .Values.k8s.db.resources | nindent 10 }}
+        ports:
+          - containerPort: 5432
+        volumeMounts:
+          - name: db
+            mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: db
+          nfs:
+            path: /storage/cloudcli-k8s/db
+            server: {{ .Values.nfs_private_ip | quote }}

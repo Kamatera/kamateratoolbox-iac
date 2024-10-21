@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudcli-k8s-rabbitmq
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: cloudcli-k8s-rabbitmq
+  template:
+    metadata:
+      labels:
+        app: cloudcli-k8s-rabbitmq
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: cloudcli-k8s-rabbitmq
+        # Pulled Oct 20, 2024
+        image: rabbitmq:4@sha256:29d08b0b96a51ec9f4c2ce76e636538dfb5e09a5ee62369d3f9ba9ce8b77f285
+        resources: {{ toYaml .Values.k8s.rabbitmq.resources | nindent 10 }}
+        ports:
+          - containerPort: 5672
+        volumeMounts:
+          - name: rabbitmq
+            mountPath: /var/lib/rabbitmq
+      volumes:
+        - name: rabbitmq
+          nfs:
+            path: /storage/cloudcli-k8s/rabbitmq
+            server: {{ .Values.nfs_private_ip | quote }}

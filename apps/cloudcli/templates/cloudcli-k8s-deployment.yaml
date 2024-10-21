@@ -19,3 +19,6 @@ spec:
         resources: {{ toYaml .Values.k8s.resources | nindent 10 }}
         ports:
           - containerPort: 8000
+        envFrom:
+        - secretRef:
+            name: cloudcli-k8s-celery

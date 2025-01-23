@@ -5,7 +5,7 @@ metadata:
   namespace: vault
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
-    traefik.ingress.kubernetes.io/service.serverstransport: "test"
+    traefik.ingress.kubernetes.io/service.serverstransport: "test2"
 spec:
   rules:
   - host: {{ .Values.domain | quote }}

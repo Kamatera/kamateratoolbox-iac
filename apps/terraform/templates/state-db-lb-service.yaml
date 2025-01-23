@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: state-db-lb
+spec:
+  type: LoadBalancer
+  selector:
+    app: state-db
+  ports:
+  - name: "21543"
+    port: 21543
+    targetPort: 5432

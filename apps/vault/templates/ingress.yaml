@@ -4,7 +4,6 @@ metadata:
   name: vault
   namespace: vault
 spec:
-  ingressClassName: nginx
   rules:
   - host: {{ .Values.domain | quote }}
     http:

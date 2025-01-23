@@ -1,3 +1,5 @@
+globalDisableAutoSync: true
+
 apps:
 
 - name: cloudcli

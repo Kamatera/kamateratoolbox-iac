@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: vault
   namespace: vault
+  annotations:
+    traefik.ingress.kubernetes.io/service.serverstransport: "test3"
 spec:
   selector:
     app: vault

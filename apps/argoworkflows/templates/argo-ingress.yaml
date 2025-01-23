@@ -2,8 +2,9 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: argo
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
 spec:
-  ingressClassName: nginx
   rules:
     - host: {{ .Values.ArgoServerDomain | quote }}
       http:
@@ -15,3 +16,7 @@ spec:
                 name: argo-server
                 port:
                   name: web
+  tls:
+  - hosts:
+    - {{ .Values.ArgoServerDomain | quote }}
+    secretName: argo-tls

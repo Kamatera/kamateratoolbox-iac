@@ -1,6 +1,5 @@
-FROM quay.io/argoproj/argocd:v2.13.3
-USER root
-RUN apt update && apt install -y python3 python3-pip curl
+FROM python:3.8@sha256:d411270700143fa2683cc8264d9fa5d3279fd3b6afff62ae81ea2f9d070e390c
 RUN pip install kubernetes==31.0.0
-USER 999
+RUN curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
 COPY argocd_iac_plugin.py /usr/local/bin/argocd_iac_plugin.py
+COPY plugin.yaml /home/argocd/cmp-server/config/plugin.yaml

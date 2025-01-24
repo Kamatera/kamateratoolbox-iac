@@ -137,7 +137,7 @@ spec:
     spec:
       serviceAccountName: cluster-autoscaler
       containers:
-        - image: k8s.gcr.io/autoscaling/cluster-autoscaler:v1.25.0
+        - image: k8s.gcr.io/autoscaling/cluster-autoscaler:v1.32.0
           name: cluster-autoscaler
           command:
             - ./cluster-autoscaler

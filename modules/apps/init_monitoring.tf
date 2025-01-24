@@ -27,6 +27,7 @@ module "monitoring_httpauth" {
 
 resource "null_resource" "set_grafana_admin_password" {
   triggers = {
+    v = "1"
     command = <<-EOF
       if ! PASSWORD=$(vault kv get -mount=kv -field=admin-password iac/apps/grafana); then
         PASSWORD=$(pwgen -s 32 1)
@@ -45,6 +46,7 @@ resource "null_resource" "set_grafana_admin_password" {
 
 resource "null_resource" "set_grafana_default_contactpoint" {
   triggers = {
+    v = "1"
     command = <<-EOF
       PASSWORD=$(vault kv get -mount=kv -field=admin-password iac/apps/grafana) &&\
       DOMAIN=${var.subdomain_prefix}-grafana.${var.root_domain} &&\

@@ -77,7 +77,9 @@ kube-prometheus-stack:
         effect: NoExecute
 
 # TODO: change to monitor k3s
-#  kubeEtcd:
+
+  kubeEtcd:
+    enabled: false
 #    endpoints:
 #      - ~iac:controlplane_public_ip~
 #    serviceMonitor:
@@ -86,11 +88,13 @@ kube-prometheus-stack:
 #      certFile: /etc/etcd-certs/cert
 #      keyFile: /etc/etcd-certs/key
 #
-#  kubeControllerManager:
+  kubeControllerManager:
+    enabled: false
 #    endpoints:
 #      - ~iac:controlplane_public_ip~
 #
-#  kubeScheduler:
+  kubeScheduler:
+    enabled: false
 #    endpoints:
 #      - ~iac:controlplane_public_ip~
 #

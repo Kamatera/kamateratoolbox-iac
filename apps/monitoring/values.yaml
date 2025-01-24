@@ -76,7 +76,7 @@ kube-prometheus-stack:
       - operator: Exists
         effect: NoExecute
 
-# TODO: change to monitor the embedded k3s etcd
+# TODO: change to monitor k3s
 #  kubeEtcd:
 #    endpoints:
 #      - ~iac:controlplane_public_ip~
@@ -85,18 +85,18 @@ kube-prometheus-stack:
 #      caFile: /etc/etcd-certs/cacert
 #      certFile: /etc/etcd-certs/cert
 #      keyFile: /etc/etcd-certs/key
-
-  kubeControllerManager:
-    endpoints:
-      - ~iac:controlplane_public_ip~
-
-  kubeScheduler:
-    endpoints:
-      - ~iac:controlplane_public_ip~
-
-  kubeProxy:
-    enabled: true
-    serviceMonitor:
-      enabled: false
-    service:
-      enabled: false
+#
+#  kubeControllerManager:
+#    endpoints:
+#      - ~iac:controlplane_public_ip~
+#
+#  kubeScheduler:
+#    endpoints:
+#      - ~iac:controlplane_public_ip~
+#
+#  kubeProxy:
+#    enabled: true
+#    serviceMonitor:
+#      enabled: false
+#    service:
+#      enabled: false

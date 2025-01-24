@@ -137,7 +137,7 @@ spec:
     spec:
       serviceAccountName: cluster-autoscaler
       containers:
-        - image: k8s.gcr.io/autoscaling/cluster-autoscaler:v1.32.0
+        - image: ghcr.io/kamatera/kubernetes-autoscaler/cluster-autoscaler-amd64:cdb90ec4d5c97522bc70c52d9bd0095b16a8570a
           name: cluster-autoscaler
           command:
             - ./cluster-autoscaler

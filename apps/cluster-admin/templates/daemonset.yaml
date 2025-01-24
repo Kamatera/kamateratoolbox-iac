@@ -51,7 +51,7 @@ spec:
             - bash
             - -c
             - |
-              if ! [ -f /mnt/host/etc/ssh/sshd_config.d/00-listen-internal.conf ]; then
+              if ! [ -f /mnt/host/etc/systemd/system/ssh.socket.d/addresses.conf ]; then
                 INTERNAL_IP=$(echo $(ip -4 addr show dev eth0 | grep inet) | cut -d' ' -f2 | cut -d'/' -f1)
                 if [ -z "$INTERNAL_IP" ]; then
                   echo failed to get internal ip && exit 1

@@ -1,10 +1,7 @@
 image: kamatera/cloudcli-server:f6eaa842a41da846865927f0a75357d33a3fd4d9
-# Built from docker/certbot on Dec 11, 2022
-certbot_image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
 minReplicas: 4
 maxReplicas: 15
 cloudcliServerDomain: "cloudcli.cloudwm.com"
-letsencryptEmail: "~iac:letsencrypt_email~"
 nfs_private_ip: "~iac:nfs_private_ip~"
 
 k8s:

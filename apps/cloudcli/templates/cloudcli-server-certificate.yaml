@@ -4,6 +4,8 @@ metadata:
   name: cloudcli-server
 spec:
   secretName: cloudcli-tls
+  privateKey:
+    algorithm: ECDSA
   dnsNames:
     - {{ .Values.cloudcliServerDomain | quote }}
   issuerRef:

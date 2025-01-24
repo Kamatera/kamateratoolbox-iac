@@ -47,12 +47,16 @@ spec:
           # Built from docker/certbot on Dec 11, 2022
           # We use this image because it contains the dependencies we need
           image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
+          env:
+            - name: INTERNAL_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
           command:
             - bash
             - -c
             - |
               if ! [ -f /mnt/host/etc/systemd/system/ssh.socket.d/addresses.conf ]; then
-                INTERNAL_IP=$(echo $(ip -4 addr show dev eth0 | grep inet) | cut -d' ' -f2 | cut -d'/' -f1)
                 if [ -z "$INTERNAL_IP" ]; then
                   echo failed to get internal ip && exit 1
                 fi &&\

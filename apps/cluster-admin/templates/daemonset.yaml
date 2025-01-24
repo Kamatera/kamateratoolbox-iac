@@ -56,17 +56,19 @@ spec:
             - bash
             - -c
             - |
-              if ! [ -f /mnt/host/etc/systemd/system/ssh.socket.d/addresses.conf ]; then
-                if [ -z "$INTERNAL_IP" ]; then
-                  echo failed to get internal ip && exit 1
-                fi &&\
+              if [ -z "$INTERNAL_IP" ]; then
+                echo failed to get internal ip && exit 1
+              fi &&\
+              if ! [ -f /mnt/host/etc/systemd/system/ssh.socket.d/override.conf ]; then
                 TEMPFILE="$(mktemp)" &&\
                 cp /mnt/ssh-access-point/privatekey $TEMPFILE &&\
                 chmod 400 $TEMPFILE &&\
                 ssh -i $TEMPFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$INTERNAL_IP "
                   mkdir -p /etc/systemd/system/ssh.socket.d &&\
-                  echo ListenAddress $INTERNAL_IP > /etc/systemd/system/ssh.socket.d/addresses.conf &&\
-                  systemctl daemon-reload
+                  echo -e '[Socket]\nListenStream='$INTERNAL_IP':22' > /etc/systemd/system/ssh.socket.d/override.conf &&\
+                  systemctl daemon-reload &&\
+                  systemctl stop ssh.service &&\
+                  systemctl restart ssh.socket
                 "
               fi
           volumeMounts:

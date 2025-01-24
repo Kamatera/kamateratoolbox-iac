@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: etcd-snapshots-backup
+  name: cluster-snapshots-backup
 spec:
   schedule: "0 1,13 * * *"
   concurrencyPolicy: Forbid
@@ -12,7 +12,7 @@ spec:
       template:
         spec:
           nodeSelector:
-            node-role.kubernetes.io/etcd: "true"
+            kubernetes.io/hostname: cloudcli-prod-k3s-controlplace
           priorityClassName: system-node-critical
           tolerations:
             - operator: Exists
@@ -30,9 +30,7 @@ spec:
                 - sh
                 - -c
                 - |
-                  ls -lah /opt/source &&\
-                  cp -f /opt/source/*.zip /opt/target/ &&\
-                  ls -lah /opt/target
+                  tar -cvzf /opt/target/snapshot-$(date +%Y-%m-%d-%H-%M-%S).tar.gz /opt/source/db
               volumeMounts:
                 - name: source
                   mountPath: /opt/source
@@ -41,7 +39,7 @@ spec:
           volumes:
             - name: source
               hostPath:
-                path: /opt/rke/etcd-snapshots
+                path: /var/lib/rancher/k3s/server
             - name: target
               persistentVolumeClaim:
-                claimName: etcd-snapshots-backup
+                claimName: cluster-snapshots-backup

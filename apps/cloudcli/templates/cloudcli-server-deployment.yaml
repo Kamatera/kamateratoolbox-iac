@@ -25,22 +25,10 @@ spec:
           value: http://cloudcli-k8s:8080/k8s/openapi.json
         startupProbe:
           httpGet: {port: 80, path: /}
-          periodSeconds: 5
-          timeoutSeconds: 2
-          successThreshold: 3
-          failureThreshold: 10
         readinessProbe:
           httpGet: {port: 80, path: /}
-          periodSeconds: 5
-          timeoutSeconds: 2
-          successThreshold: 3
-          failureThreshold: 2
         livenessProbe:
           httpGet: {port: 80, path: /}
-          periodSeconds: 5
-          timeoutSeconds: 2
-          successThreshold: 3
-          failureThreshold: 2
         resources:
           requests:
             cpu: 1000m

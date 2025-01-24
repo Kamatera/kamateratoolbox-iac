@@ -56,14 +56,15 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 100Gi
-      volumes:
-        - name: etcd-certs
-          secret:
-              secretName: etcd-certs
-      volumeMounts:
-        - name: etcd-certs
-          mountPath: /etc/etcd-certs
-          readOnly: true
+# TODO: change to monitor the embedded k3s etcd
+#      volumes:
+#        - name: etcd-certs
+#          secret:
+#              secretName: etcd-certs
+#      volumeMounts:
+#        - name: etcd-certs
+#          mountPath: /etc/etcd-certs
+#          readOnly: true
 
   prometheus-node-exporter:
     priorityClassName: system-node-critical
@@ -75,14 +76,15 @@ kube-prometheus-stack:
       - operator: Exists
         effect: NoExecute
 
-  kubeEtcd:
-    endpoints:
-      - ~iac:controlplane_public_ip~
-    serviceMonitor:
-      scheme: https
-      caFile: /etc/etcd-certs/cacert
-      certFile: /etc/etcd-certs/cert
-      keyFile: /etc/etcd-certs/key
+# TODO: change to monitor the embedded k3s etcd
+#  kubeEtcd:
+#    endpoints:
+#      - ~iac:controlplane_public_ip~
+#    serviceMonitor:
+#      scheme: https
+#      caFile: /etc/etcd-certs/cacert
+#      certFile: /etc/etcd-certs/cert
+#      keyFile: /etc/etcd-certs/key
 
   kubeControllerManager:
     endpoints:

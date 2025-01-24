@@ -1,12 +1,3 @@
-output "cluster_context" {
-  value = module.cluster.cluster_context
-}
-
-output "kubeconfig" {
-  value = module.cluster.kubeconfig
-  sensitive = true
-}
-
 output "apps" {
   value = {
     argocd = module.apps.argocd
@@ -16,7 +7,7 @@ output "apps" {
 }
 
 output "ingress_hostname" {
-  value = module.cluster.ingress_hostname
+  value = module.k3s.ingress_hostname
 }
 
 output "ssh_access_point_public_ip" {

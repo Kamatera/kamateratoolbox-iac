@@ -7,10 +7,3 @@ metadata:
     app.kubernetes.io/part-of: argocd
 data:
   url: https://__SUBDOMAIN_PREFIX__-argocd.__ROOT_DOMAIN__
-  configManagementPlugins: |
-    - name: argocd-iac-plugin-helm-with-args
-      init:
-        command: ["argocd_iac_plugin.py", "init", "."]
-      generate:
-        command: ["sh", "-c"]
-        args: ['argocd_iac_plugin.py generate . "$ARGOCD_APP_NAME" "$ARGOCD_APP_NAMESPACE" ${ARGOCD_ENV_helm_args}']

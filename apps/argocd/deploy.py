@@ -11,7 +11,6 @@ def main(root_domain, subdomain_prefix):
     for template_name in [
         'argocd-cm',
         'argocd-server-https-ingress',
-        'argocd-server-grpc-ingress',
     ]:
         with open(os.path.join(os.path.dirname(__file__), f'{template_name}.template.yaml')) as f:
             template = f.read()

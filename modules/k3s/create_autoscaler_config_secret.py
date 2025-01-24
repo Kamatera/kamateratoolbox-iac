@@ -21,6 +21,7 @@ def get_configuration(datacenter_id, image_id, private_network, cpu, ram, disk_s
         kamatera-api-client-id={KAMATERA_AUTOSCALER_API_CLIENT_ID.strip()}
         kamatera-api-secret={KAMATERA_AUTOSCALER_API_SECRET.strip()}
         cluster-name={cluster_name}
+        filter-name-prefix={nodegroup_name_prefix}
         
         [nodegroup "{nodegroup_name}"]
         name-prefix={nodegroup_name_prefix}
@@ -28,8 +29,8 @@ def get_configuration(datacenter_id, image_id, private_network, cpu, ram, disk_s
         max-size=3
         datacenter={datacenter_id.strip()}
         image={image_id.strip()}
-        network = "name=wan,ip=auto"
         network = "name={private_network.strip()},ip=auto"
+        network = "name=wan,ip=auto"
         cpu={cpu.strip()}
         ram={ram.strip()}
         disk=size={disk_size.strip()}

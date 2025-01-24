@@ -5,8 +5,6 @@ variable "datacenter_id" {}
 variable "ssh_access_point_name" {}
 variable "ssh_pubkey" {}
 variable "private_network_full_name" {}
-variable "cluster_context" {}
-variable "argocd_grpc_domain" {}
 
 terraform {
   required_providers {
@@ -17,8 +15,7 @@ terraform {
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"
-  config_context = var.cluster_context
+  config_path = "/etc/kamatera/cloudcli/kubeconfig"
 }
 
 output "ssh_access_point_public_ip" {

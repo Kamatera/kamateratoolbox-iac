@@ -19,9 +19,3 @@ resource "kubernetes_config_map" "ssh_authorized_keys" {
     { for k, v in var.ssh_additional_authorized_keys : "SSHKEY_${k}" => v }
   )
 }
-
-module "argocd_sync_cluster_admin" {
-  source = "../common/admin_sync_argocd_app"
-  domain = var.argocd_grpc_domain
-  app_name = "cluster-admin"
-}

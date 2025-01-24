@@ -2,7 +2,7 @@ data "statuscake_contact_group" "default" {
   id = "289378"
 }
 
-# we only need to do an SSL check on one of the subdomains because they all use the same certificate
+# we only need to do an SSL check on one of the subdomains because they all use the same certificate issuance process
 resource "statuscake_ssl_check" "argocd" {
     check_interval = 86400
     contact_groups = [
@@ -33,7 +33,7 @@ resource "statuscake_ssl_check" "cloudcli" {
         on_mixed    = true
     }
     monitored_resource {
-        address = "https://${var.subdomain_prefix}-argocd.${var.root_domain}"
+        address = "https://cloudcli.cloudwm.com"
     }
 }
 

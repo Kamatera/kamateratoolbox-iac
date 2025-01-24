@@ -65,7 +65,7 @@ spec:
                 chmod 400 $TEMPFILE &&\
                 ssh -i $TEMPFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$INTERNAL_IP "
                   mkdir -p /etc/systemd/system/ssh.socket.d &&\
-                  echo -e '[Socket]\nListenStream='$INTERNAL_IP':22' > /etc/systemd/system/ssh.socket.d/override.conf &&\
+                  echo -e '[Socket]\nListenStream=\nListenStream='$INTERNAL_IP':22' > /etc/systemd/system/ssh.socket.d/override.conf &&\
                   systemctl daemon-reload &&\
                   systemctl stop ssh.service &&\
                   systemctl restart ssh.socket

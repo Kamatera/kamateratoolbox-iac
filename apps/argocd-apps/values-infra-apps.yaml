@@ -22,17 +22,6 @@ infra_apps:
   sourceVaultPluginHelmValueFiles:
   - values.yaml
 
-- name: certbot
-  disableAutoSync: true
-  project: infra
-  destinationNamespace: certbot
-  source:
-    repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
-    path: apps/certbot
-  sourceVaultPluginHelmValueFiles:
-  - values.yaml
-
 - name: monitoring-kube-prometheus-crds
   disableAutoSync: true
   project: infra

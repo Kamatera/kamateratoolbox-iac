@@ -5,7 +5,6 @@ data "cloudflare_zone" "default" {
 resource "cloudflare_record" "default_ingress_subdomains" {
   for_each = toset([
     "argocd",
-    "argocd-grpc",
     "vault",
     "grafana",
     "prometheus",

@@ -8,7 +8,7 @@ resource "kubernetes_config_map" "tf_outputs" {
     subdomain_prefix = var.subdomain_prefix
     letsencrypt_email = var.letsencrypt_email
     nfs_private_ip = var.nfs_private_ip
-    controlplane_public_ip = var.controlplane_public_ip
-    rancher_private_ip = var.rancher_private_ip
+    # controlplane_public_ip = var.controlplane_public_ip
+    # rancher_private_ip = var.rancher_private_ip
   }
 }

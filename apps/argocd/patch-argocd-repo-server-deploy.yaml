@@ -5,12 +5,24 @@ metadata:
 spec:
   template:
     spec:
+      volumes:
+        - name: cmp-tmp
+          emptyDir: {}
       containers:
-      - name: argocd-repo-server
-        # built from docker/argocd_plugin on Dec 18, 2022
-        image: ghcr.io/kamatera/kamateratoolbox-iac-argocd-plugin:c3dee9f715c3bad5e23c44367e7d7c8a7225bc52
+      - name: plugin
+        # built from docker/argocd_plugin on Jan 23, 2025
+        image: ghcr.io/kamatera/kamateratoolbox-iac-argocd-plugin:c243cd3b99d75e2a8577b12bc182b82909344de9
+        command: [/var/run/argocd/argocd-cmp-server]
         securityContext:
-          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+          - mountPath: /var/run/argocd
+            name: var-files
+          - mountPath: /home/argocd/cmp-server/plugins
+            name: plugins
+          - mountPath: /tmp
+            name: cmp-tmp
         env:
         - name: AVP_ROLE_ID
           valueFrom:

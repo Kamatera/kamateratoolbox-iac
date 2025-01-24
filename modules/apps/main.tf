@@ -5,8 +5,6 @@ variable "ingress_hostname" {}
 variable "rancher_public_ip" {}
 variable "rancher_private_ip" {}
 variable "ssh_private_key_file" {}
-variable "default_ssl_certificate_secret_name" {}
-variable "cluster_context" {}
 variable "nfs_private_ip" {}
 variable "initial_admin_user" {}
 variable "name_suffix" {}
@@ -29,8 +27,7 @@ terraform {
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"
-  config_context = var.cluster_context
+  config_path = "/etc/kamatera/cloudcli/kubeconfig"
 }
 
 output "argocd" {
@@ -53,8 +50,4 @@ output "grafana" {
     "url" = "https://${var.subdomain_prefix}-grafana.${var.root_domain}"
     "admin-password" = "vault kv get -mount=kv -field=admin-password iac/apps/grafana"
   }
-}
-
-output "argocd_grpc_domain" {
-  value = "${var.subdomain_prefix}-argocd-grpc.${var.root_domain}"
 }

@@ -116,10 +116,11 @@ def main(*args):
             print(f'export TF_VAR_ssh_private_key_file="environments/{environment_name}/.id_rsa"')
             print(f'echo -n "TF_VAR_ssh_private_key_file "')
             _print("")
-            if sub_environment_name:
-                print(f'kubectl config use-context $(terraform -chdir=environments/{environment_name} output -raw cluster_context)')
-            else:
-                print('bin/add_kube_context.sh')
+            print('export KUBECONFIG=/etc/kamatera/cloudcli/kubeconfig')
+            # if sub_environment_name:
+            #     print(f'kubectl config use-context $(terraform -chdir=environments/{environment_name} output -raw cluster_context)')
+            # else:
+            #     print('bin/add_kube_context.sh')
         except:
             _print(traceback.format_exc())
             ret = 1

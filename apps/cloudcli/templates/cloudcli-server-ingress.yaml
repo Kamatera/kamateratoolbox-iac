@@ -2,13 +2,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: cloudcli-server
-#  annotations:
-#    cert-manager.io/cluster-issuer: letsencrypt
 spec:
-#  tls:
-#    - hosts:
-#        - {{ .Values.cloudcliServerDomain | quote }}
-#      secretName: cloudcli-server-tls
+  tls:
+    - hosts:
+        - {{ .Values.cloudcliServerDomain | quote }}
+      secretName: cloudcli-tls
   rules:
     - host: {{ .Values.cloudcliServerDomain | quote }}
       http:

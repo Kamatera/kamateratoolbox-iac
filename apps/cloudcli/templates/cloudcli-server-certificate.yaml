@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cloudcli-server
+spec:
+  secretName: cloudcli-tls
+  dnsNames:
+    - {{ .Values.cloudcliServerDomain | quote }}
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt
+  usages:
+    - digital signature
+    - key encipherment

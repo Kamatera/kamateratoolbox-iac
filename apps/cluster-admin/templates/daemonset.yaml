@@ -52,39 +52,19 @@ spec:
             - -c
             - |
               if ! [ -f /mnt/host/etc/ssh/sshd_config.d/00-listen-internal.conf ]; then
-                CONF=/mnt/host/root/guest.conf
-                INTERNAL_IP="$(cat $CONF | grep "ip$(cat $CONF | grep vlan | grep -v "[0-9]=wan-" | cut -d"=" -f1 | cut -dn -f2)=" | cut -d= -f2)" &&\
-                echo $INTERNAL_IP &&\
-                echo INTERNAL_IP=$INTERNAL_IP &&\
-                echo $EXTERNAL_IP &&\
-                echo EXTERNAL_IP=$EXTERNAL_IP &&\
-                if [ -z "$INTERNAL_IP" ] || [ -z "$EXTERNAL_IP" ] || [ "$INTERNAL_IP" == "$EXTERNAL_IP" ]; then
-                  echo failed to get internal or external ips && exit 1
+                INTERNAL_IP=$(echo $(ip -4 addr show dev eth0 | grep inet) | cut -d' ' -f2 | cut -d'/' -f1)
+                if [ -z "$INTERNAL_IP" ]; then
+                  echo failed to get internal ip && exit 1
                 fi &&\
                 TEMPFILE="$(mktemp)" &&\
                 cp /mnt/ssh-access-point/privatekey $TEMPFILE &&\
                 chmod 400 $TEMPFILE &&\
-                SSH="ssh -i $TEMPFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" &&\
-                INTERNAL_HOSTNAME="$($SSH root@$INTERNAL_IP hostname)" &&\
-                echo INTERNAL_HOSTNAME=$INTERNAL_HOSTNAME &&\
-                EXTERNAL_HOSTNAME="$($SSH root@$EXTERNAL_IP hostname)" &&\
-                echo EXTERNAL_HOSTNAME=$EXTERNAL_HOSTNAME &&\
-                if [ -z "$INTERNAL_HOSTNAME" ] || [ -z "$EXTERNAL_HOSTNAME" ]; then
-                  echo failed to get internal or external hostnames && exit 1
-                fi &&\
-                if [ "$INTERNAL_HOSTNAME" != "$EXTERNAL_HOSTNAME" ]; then
-                  echo internal and external hostnames do not match && exit 1
-                fi &&\
-                $SSH root@$INTERNAL_IP "
-                  echo ListenAddress $INTERNAL_IP > /etc/ssh/sshd_config.d/00-listen-internal.conf &&\
-                  systemctl reload sshd
+                ssh -i $TEMPFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$INTERNAL_IP "
+                  mkdir -p /etc/systemd/system/ssh.socket.d &&\
+                  echo ListenAddress $INTERNAL_IP > /etc/systemd/system/ssh.socket.d/addresses.conf &&\
+                  systemctl daemon-reload
                 "
               fi
-          env:
-            - name: EXTERNAL_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
           volumeMounts:
             - name: host
               mountPath: /mnt/host

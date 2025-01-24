@@ -1,11 +1,10 @@
+{{ if false }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: cloudcli-server
 spec:
-  secretName: cloudcli-tls
-  privateKey:
-    algorithm: ECDSA
+  secretName: cloudcli-server-tls
   dnsNames:
     - {{ .Values.cloudcliServerDomain | quote }}
   issuerRef:
@@ -15,3 +14,4 @@ spec:
   usages:
     - digital signature
     - key encipherment
+{{ end }}

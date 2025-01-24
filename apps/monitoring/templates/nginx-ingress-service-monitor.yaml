@@ -1,3 +1,5 @@
+# TODO: change to traefik ingress monitoring
+{{ if false }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -32,3 +34,4 @@ spec:
   selector:
     matchLabels:
       service: nginx-ingress-metrics
+{{ end }}

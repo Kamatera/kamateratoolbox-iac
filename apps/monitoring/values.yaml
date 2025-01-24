@@ -15,9 +15,14 @@ kube-prometheus-stack:
   grafana:
     ingress:
       enabled: true
-      ingressClassName: nginx
+      annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
       hosts:
         - ~iac:subdomain_prefix~-grafana.~iac:root_domain~
+      tls:
+      - hosts:
+        - ~iac:subdomain_prefix~-grafana.~iac:root_domain~
+        secretName: grafana-tls
     persistence:
       enabled: true
     serviceMonitor:

@@ -69,26 +69,26 @@ output "controlplane_private_ip" {
   value = local.controlplane_private_ip
 }
 
-resource "null_resource" "install_controlplane" {
-  depends_on = [kamatera_server.k3s["controlplace"]]
-  triggers = {
-    command = <<-EOF
-      curl -sfL https://get.k3s.io | sh -s - \
-        --node-name ${local.controlplane_name} \
-        --node-ip ${local.controlplane_private_ip} \
-        --node-external-ip ${local.controlplane_public_ip} \
-        --advertise-address ${local.controlplane_private_ip} \
-        --tls-san 0.0.0.0 --tls-san ${local.controlplane_private_ip} --tls-san ${local.controlplane_public_ip}
-    EOF
-  }
-  provisioner "remote-exec" {
-    connection {
-      host = local.controlplane_public_ip
-      private_key = file("${path.cwd}/${var.ssh_private_key_file}")
-    }
-    inline = ["#!/bin/bash", self.triggers.command]
-  }
-}
+# resource "null_resource" "install_controlplane" {
+#   depends_on = [kamatera_server.k3s["controlplace"]]
+#   triggers = {
+#     command = <<-EOF
+#       curl -sfL https://get.k3s.io | sh -s - \
+#         --node-name ${local.controlplane_name} \
+#         --node-ip ${local.controlplane_private_ip} \
+#         --node-external-ip ${local.controlplane_public_ip} \
+#         --advertise-address ${local.controlplane_private_ip} \
+#         --tls-san 0.0.0.0 --tls-san ${local.controlplane_private_ip} --tls-san ${local.controlplane_public_ip}
+#     EOF
+#   }
+#   provisioner "remote-exec" {
+#     connection {
+#       host = local.controlplane_public_ip
+#       private_key = file("${path.cwd}/${var.ssh_private_key_file}")
+#     }
+#     inline = ["#!/bin/bash", self.triggers.command]
+#   }
+# }
 
 module "k3s_token" {
   source = "../common/external_data_command"
@@ -120,7 +120,7 @@ resource "null_resource" "install_workers" {
 }
 
 resource "null_resource" "kubeconfig" {
-  depends_on = [null_resource.install_controlplane]
+  # depends_on = [null_resource.install_controlplane]
   triggers = {
       command = <<-EOF
         scp -o StrictHostKeyChecking=no -i ${var.ssh_private_key_file} root@${local.controlplane_public_ip}:/etc/rancher/k3s/k3s.yaml /etc/kamatera/cloudcli/kubeconfig

@@ -36,7 +36,7 @@ variable "default_ingress_subdomain" {}
 # }
 
 resource "kamatera_server" "k3s" {
-  for_each = toset(["controlplace", "worker1", "worker2", "worker3"])
+  for_each = toset(["controlplace", "worker1", "worker2", "worker3", "worker4", "worker5", "worker6"])
   name = "${var.name_prefix}-${each.key}"
   datacenter_id = var.datacenter_id
   cpu_type = "B"

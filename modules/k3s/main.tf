@@ -99,38 +99,40 @@ locals {
   k3s_token = module.k3s_token.output.token
 }
 
-resource "null_resource" "install_workers" {
-  for_each = toset(["worker1", "worker2", "worker3"])
-  depends_on = [kamatera_server.k3s]
-  triggers = {
-    command = <<-EOF
-      curl -sfL https://get.k3s.io | K3S_URL=https://${local.controlplane_private_ip}:6443 K3S_TOKEN=${local.k3s_token} sh -s - \
-        --node-name ${kamatera_server.k3s[each.key].name} \
-        --node-ip ${kamatera_server.k3s[each.key].private_ips[0]} \
-        --node-external-ip ${kamatera_server.k3s[each.key].public_ips[0]}
-    EOF
-  }
-  provisioner "remote-exec" {
-    connection {
-      host = kamatera_server.k3s[each.key].public_ips[0]
-      private_key = file("${path.cwd}/${var.ssh_private_key_file}")
-    }
-    inline = ["#!/bin/bash", self.triggers.command]
-  }
-}
+# for new workers, install manually using the upgrades output
+# resource "null_resource" "install_workers" {
+#   for_each = toset(["worker1", "worker2", "worker3"])
+#   depends_on = [kamatera_server.k3s]
+#   triggers = {
+#     command = <<-EOF
+#       curl -sfL https://get.k3s.io | K3S_URL=https://${local.controlplane_private_ip}:6443 K3S_TOKEN=${local.k3s_token} sh -s - \
+#         --node-name ${kamatera_server.k3s[each.key].name} \
+#         --node-ip ${kamatera_server.k3s[each.key].private_ips[0]} \
+#         --node-external-ip ${kamatera_server.k3s[each.key].public_ips[0]}
+#     EOF
+#   }
+#   provisioner "remote-exec" {
+#     connection {
+#       host = kamatera_server.k3s[each.key].public_ips[0]
+#       private_key = file("${path.cwd}/${var.ssh_private_key_file}")
+#     }
+#     inline = ["#!/bin/bash", self.triggers.command]
+#   }
+# }
 
-resource "null_resource" "kubeconfig" {
-  # depends_on = [null_resource.install_controlplane]
-  triggers = {
-      command = <<-EOF
-        scp -o StrictHostKeyChecking=no -i ${var.ssh_private_key_file} root@${local.controlplane_public_ip}:/etc/rancher/k3s/k3s.yaml /etc/kamatera/cloudcli/kubeconfig
-        sed -i "s/127.0.0.1/${local.controlplane_public_ip}/" /etc/kamatera/cloudcli/kubeconfig
-      EOF
-  }
-  provisioner "local-exec" {
-    command = self.triggers.command
-  }
-}
+# copy the kubeconfig manually if needed
+# resource "null_resource" "kubeconfig" {
+#   # depends_on = [null_resource.install_controlplane]
+#   triggers = {
+#       command = <<-EOF
+#         scp -o StrictHostKeyChecking=no -i ${var.ssh_private_key_file} root@${local.controlplane_public_ip}:/etc/rancher/k3s/k3s.yaml /etc/kamatera/cloudcli/kubeconfig
+#         sed -i "s/127.0.0.1/${local.controlplane_public_ip}/" /etc/kamatera/cloudcli/kubeconfig
+#       EOF
+#   }
+#   provisioner "local-exec" {
+#     command = self.triggers.command
+#   }
+# }
 
 resource "null_resource" "install_nfs_client" {
   for_each = kamatera_server.k3s
@@ -150,7 +152,7 @@ resource "null_resource" "install_nfs_client" {
 }
 
 resource "null_resource" "set_controlplane_node_taints" {
-  depends_on = [null_resource.kubeconfig]
+  # depends_on = [null_resource.kubeconfig]
   triggers = {
       command = <<-EOF
           export KUBECONFIG=/etc/kamatera/cloudcli/kubeconfig

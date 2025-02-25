@@ -10,7 +10,7 @@ locals {
 }
 
 resource "null_resource" "autoscaler_config_secret" {
-  depends_on = [null_resource.kubeconfig]
+  # depends_on = [null_resource.kubeconfig]
   triggers = {
     v = "3"
     command = <<-EOF

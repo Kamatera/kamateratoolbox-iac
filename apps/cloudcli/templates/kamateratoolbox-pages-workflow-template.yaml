@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: WorkflowTemplate
+metadata:
+  name: kamateratoolbox-pages
+spec:
+  entrypoint: deploy
+  templates:
+    - name: deploy
+      container:
+        image: ghcr.io/kamatera/kamateratoolbox:065b07588fa599707e8c57dd5137f58605684ac6
+        envFrom:
+          - secretRef:
+              name: kamateratoolbox-pages
+        command:
+          - bash
+          - bin/deploy.sh
+          - --with-timestamp

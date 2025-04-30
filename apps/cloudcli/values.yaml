@@ -68,3 +68,9 @@ secrets:
     POSTGRES_PASSWORD: "~vault:cloudcli/celery:POSTGRES_PASSWORD~"
     CELERY_RESULT_BACKEND: "~vault:cloudcli/celery:CELERY_RESULT_BACKEND~"
     CELERY_BROKER: "~vault:cloudcli/celery:CELERY_BROKER~"
+- name: kamateratoolbox-pages
+  data:
+    GH_USER: "~vault:cloudcli/kamateratoolbox-pages:GH_USER~"
+    GH_TOKEN: "~vault:cloudcli/kamateratoolbox-pages:GH_TOKEN~"
+    GIT_USERNAME: "~vault:cloudcli/kamateratoolbox-pages:GIT_USERNAME~"
+    GIT_EMAIL: "~vault:cloudcli/kamateratoolbox-pages:GIT_EMAIL~"

@@ -7,11 +7,10 @@ spec:
   templates:
     - name: deploy
       container:
-        image: ghcr.io/kamatera/kamateratoolbox:065b07588fa599707e8c57dd5137f58605684ac6
+        image: ghcr.io/kamatera/kamateratoolbox:7b953700e30092ea4266549ce48b5fca5b04ee8d
         envFrom:
           - secretRef:
               name: kamateratoolbox-pages
         command:
           - bash
           - bin/deploy.sh
-          - --with-timestamp

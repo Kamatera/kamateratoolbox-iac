@@ -1,0 +1,9 @@
+apiVersion: argoproj.io/v1alpha1
+kind: CronWorkflow
+metadata:
+  name: kamateratoolbox-pages
+spec:
+  schedule: "11 3 * * *"
+  workflowSpec:
+    workflowTemplateRef:
+      name: kamateratoolbox-pages

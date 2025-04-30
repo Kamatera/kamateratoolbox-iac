@@ -7,7 +7,7 @@ spec:
   templates:
     - name: deploy
       container:
-        image: ghcr.io/kamatera/kamateratoolbox:7b953700e30092ea4266549ce48b5fca5b04ee8d
+        image: ghcr.io/kamatera/kamateratoolbox:aa88aafdcac66b3c2347dae4160fe1d7f20eb236
         envFrom:
           - secretRef:
               name: kamateratoolbox-pages

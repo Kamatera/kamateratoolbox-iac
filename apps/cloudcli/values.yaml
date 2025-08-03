@@ -1,4 +1,4 @@
-image: kamatera/cloudcli-server:f6eaa842a41da846865927f0a75357d33a3fd4d9
+image: kamatera/cloudcli-server:45e0cf455156b600fa670e77e1a3a738b82a5f55
 minReplicas: 4
 maxReplicas: 15
 cloudcliServerDomain: "cloudcli.cloudwm.com"

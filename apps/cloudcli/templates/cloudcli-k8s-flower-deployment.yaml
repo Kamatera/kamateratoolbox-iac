@@ -1,3 +1,4 @@
+{{ if .Values.k8s.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -23,3 +24,5 @@ spec:
         resources: {{ toYaml .Values.k8s.flower.resources | nindent 10 }}
         ports:
           - containerPort: 5555
+
+{{ end }}

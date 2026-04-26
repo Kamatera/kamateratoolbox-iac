@@ -1,10 +1,11 @@
-image: kamatera/cloudcli-server:45e0cf455156b600fa670e77e1a3a738b82a5f55
+image: kamatera/cloudcli-server:8d4ed418ca3c2a2b0de73a0818f020653a8e2bf3
 minReplicas: 4
 maxReplicas: 15
 cloudcliServerDomain: "cloudcli.cloudwm.com"
 nfs_private_ip: "~iac:nfs_private_ip~"
 
 k8s:
+  enabled: false
   # version is the git hash from Kamatera/cloudcli-server-kubernetes repo
   version: 983398bc412c84af04cbf9d430934b967d365b4f
   replicas: 3

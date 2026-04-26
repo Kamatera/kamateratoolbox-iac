@@ -1,3 +1,4 @@
+{{ if .Values.k8s.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -30,3 +31,5 @@ spec:
           nfs:
             path: /storage/cloudcli-k8s/rabbitmq
             server: {{ .Values.nfs_private_ip | quote }}
+
+{{ end }}

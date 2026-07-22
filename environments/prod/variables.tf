@@ -16,3 +16,4 @@ variable "kamatera_api_client_id" {sensitive = true}
 variable "kamatera_api_secret" {sensitive = true}
 variable "statuscake_api_token" {sensitive = true}
 variable "worker_public_ips_json" {type = string}
+variable "external_firewall_config_json" {type = string}

@@ -67,3 +67,16 @@ module "k3s" {
   default_ingress_subdomain = "${var.name_suffix}-${var.environment_name}-kingress"
   worker_public_ips = jsondecode(var.worker_public_ips_json)
 }
+
+locals {
+  external_firewall_config = jsondecode(var.external_firewall_config_json)
+}
+
+module "external_firewall" {
+  source = "../../../kamateratoolbox-iac-private/tfmodules/firewall"
+  controlplane_public_ips = local.external_firewall_config.controlplane_public_ips
+  controlplane_server_names = local.external_firewall_config.controlplane_server_names
+  worker_public_ips = local.external_firewall_config.worker_public_ips
+  worker_server_names = local.external_firewall_config.worker_server_names
+  firewall_output_path = local.external_firewall_config.firewall_output_path
+}

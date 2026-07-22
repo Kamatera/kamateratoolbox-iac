@@ -18,7 +18,7 @@ module "apps" {
   root_domain = var.root_domain
   subdomain_prefix = var.subdomain_prefix
   set_context = "export KUBECONFIG=/etc/kamatera/cloudcli/kubeconfig"
-  ingress_hostname = ""
+  ingress_hostname = "${var.name_suffix}-${var.environment_name}-kingress.${var.root_domain}"
   rancher_public_ip = ""
   rancher_private_ip = ""
   ssh_private_key_file = var.ssh_private_key_file
@@ -65,4 +65,5 @@ module "k3s" {
   autoscaler_nodegroup_name_prefix = "cldcliprodas"
   root_domain = var.root_domain
   default_ingress_subdomain = "${var.name_suffix}-${var.environment_name}-kingress"
+  worker_public_ips = jsondecode(var.worker_public_ips_json)
 }

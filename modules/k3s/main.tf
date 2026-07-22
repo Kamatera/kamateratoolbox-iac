@@ -29,6 +29,10 @@ variable "autoscaler_nodegroup_name_prefix" {}
 variable "root_domain" {}
 variable "default_ingress_subdomain" {}
 
+variable "worker_public_ips" {
+  type = map(string)
+}
+
 # data "kamatera_image" "ubuntu" {
 #   datacenter_id = var.datacenter_id
 #   os = "Ubuntu"

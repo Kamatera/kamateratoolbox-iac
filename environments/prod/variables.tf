@@ -12,3 +12,7 @@ variable "alert_email_addresses" {
   description = "A list of email addresses separated by ;"
 }
 variable "ssh_additional_authorized_keys_json" {description = "JSON map of additional SSH authorized keys to add to all servers"}
+variable "kamatera_api_client_id" {sensitive = true}
+variable "kamatera_api_secret" {sensitive = true}
+variable "statuscake_api_token" {sensitive = true}
+variable "worker_public_ips_json" {type = string}

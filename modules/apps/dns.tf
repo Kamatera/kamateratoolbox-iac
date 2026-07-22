@@ -1,8 +1,10 @@
 data "cloudflare_zone" "default" {
-  name = var.root_domain
+  filter = {
+    name = var.root_domain
+  }
 }
 
-resource "cloudflare_record" "default_ingress_subdomains" {
+resource "cloudflare_dns_record" "default_ingress_subdomains" {
   for_each = toset([
     "argocd",
     "vault",
@@ -15,6 +17,7 @@ resource "cloudflare_record" "default_ingress_subdomains" {
   zone_id = data.cloudflare_zone.default.id
   name = "${var.subdomain_prefix}-${each.value}"
   type = "CNAME"
-  value = var.ingress_hostname
+  content = var.ingress_hostname
   proxied = false
+  ttl = 300
 }

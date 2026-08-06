@@ -11,7 +11,7 @@ resource "kamatera_server" "ssh_access_point" {
   cpu_cores = 1
   ram_mb = 1024
   disk_sizes_gb = [10]
-  billing_cycle = "monthly"
+  billing_cycle = "hourly"
   image_id = "EU:6000C29f313b496da71f669782d04b75"  # data.kamatera_image.ubuntu.id
   ssh_pubkey = var.ssh_pubkey
   network {

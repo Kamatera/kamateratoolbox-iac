@@ -6,9 +6,6 @@
 locals {
     k3s_version = "v1.31.4+k3s1"
     workers = [
-        "worker1",
-        "worker2",
-        "worker3",
         "worker4",
         "worker5",
         "worker6"

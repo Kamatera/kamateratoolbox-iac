@@ -41,7 +41,7 @@ module "firewall" {
       controlplane: module.k3s.controlplane_private_ip
     },
     {
-      for i, ip in module.k3s.worker_private_ips : "worker${i+1}" => ip
+      for i, ip in module.k3s.worker_private_ips : "worker${i+4}" => ip
     }
   )
   ssh_additional_authorized_keys = jsondecode(var.ssh_additional_authorized_keys_json)

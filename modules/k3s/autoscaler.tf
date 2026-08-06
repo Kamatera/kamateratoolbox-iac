@@ -16,7 +16,7 @@ resource "null_resource" "autoscaler_config_secret" {
     command = <<-EOF
       python3 create_autoscaler_config_secret.py \
         "${var.datacenter_id}" \
-        "${kamatera_server.k3s["worker1"].image_id}" \
+        "${kamatera_server.k3s["worker4"].image_id}" \
         "${var.private_network_full_name}" \
         4B 8192 200 \
         "${base64encode(local.autoscaler_nodes_startup_script)}" \

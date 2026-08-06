@@ -16,17 +16,18 @@ variable "subnet_bit" {
   default = 23
 }
 
-resource "kamatera_network" "private" {
-  datacenter_id = var.datacenter_id
-  name = var.name
-  subnet {
-    ip = var.subnet_ip
-    bit = var.subnet_bit
-  }
-}
+# resource "kamatera_network" "private" {
+#   datacenter_id = var.datacenter_id
+#   name = var.name
+#   subnet {
+#     ip = var.subnet_ip
+#     bit = var.subnet_bit
+#   }
+# }
 
 output "full_name" {
-  value = kamatera_network.private.full_name
+  # value = kamatera_network.private.full_name
+  value = "lan-82145-cloudcli-prod"
 }
 output "cidr" {
   value = "${var.subnet_ip}/${var.subnet_bit}"

@@ -79,4 +79,5 @@ module "external_firewall" {
   worker_public_ips = local.external_firewall_config.worker_public_ips
   worker_server_names = local.external_firewall_config.worker_server_names
   firewall_output_path = local.external_firewall_config.firewall_output_path
+  ssh_access_point_public_ip = module.firewall.ssh_access_point_public_ip
 }

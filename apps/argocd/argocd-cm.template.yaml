@@ -6,4 +6,4 @@ metadata:
     app.kubernetes.io/name: argocd-cm
     app.kubernetes.io/part-of: argocd
 data:
-  url: https://__SUBDOMAIN_PREFIX__-argocd.__ROOT_DOMAIN__
+  url: https://argocd.__SUBDOMAIN_PREFIX__.__ROOT_DOMAIN__

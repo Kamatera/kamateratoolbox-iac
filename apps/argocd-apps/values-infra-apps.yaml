@@ -6,7 +6,7 @@ infra_apps:
   destinationNamespace: vault
   source:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
+    targetRevision: rke2
     path: apps/vault
   sourceVaultPluginHelmValueFiles:
   - values.yaml
@@ -17,7 +17,7 @@ infra_apps:
   destinationNamespace: terraform
   source:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
+    targetRevision: rke2
     path: apps/terraform
   sourceVaultPluginHelmValueFiles:
   - values.yaml
@@ -40,7 +40,7 @@ infra_apps:
   destinationNamespace: monitoring
   source:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
+    targetRevision: rke2
     path: apps/monitoring
   sourceVaultPluginHelmValueFiles:
   - values.yaml
@@ -62,7 +62,7 @@ infra_apps:
   destinationNamespace: kube-system
   source:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
+    targetRevision: rke2
     path: apps/cluster-autoscaler
 
 - name: cluster-admin
@@ -71,7 +71,7 @@ infra_apps:
   destinationNamespace: cluster-admin
   source:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
+    targetRevision: rke2
     path: apps/cluster-admin
   sourceVaultPluginHelmValueFiles:
   - values.yaml
@@ -82,7 +82,7 @@ infra_apps:
   destinationNamespace: argo
   source:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
+    targetRevision: rke2
     path: apps/argoworkflows/manifests
 
 - name: argoworkflows
@@ -91,7 +91,7 @@ infra_apps:
   destinationNamespace: argo
   source:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: main
+    targetRevision: rke2
     path: apps/argoworkflows
   sourceVaultPluginHelmValueFiles:
   - values.yaml

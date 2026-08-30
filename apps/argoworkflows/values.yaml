@@ -1,1 +1,1 @@
-ArgoServerDomain: "~iac:subdomain_prefix~-argo.~iac:root_domain~"
+ArgoServerDomain: "argo.~iac:subdomain_prefix~.~iac:root_domain~"

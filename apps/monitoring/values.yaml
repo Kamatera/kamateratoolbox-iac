@@ -18,10 +18,10 @@ kube-prometheus-stack:
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
       hosts:
-        - ~iac:subdomain_prefix~-grafana.~iac:root_domain~
+        - grafana.~iac:subdomain_prefix~.~iac:root_domain~
       tls:
       - hosts:
-        - ~iac:subdomain_prefix~-grafana.~iac:root_domain~
+        - grafana.~iac:subdomain_prefix~.~iac:root_domain~
         secretName: grafana-tls
     persistence:
       enabled: true
@@ -41,7 +41,7 @@ kube-prometheus-stack:
       grafana_net:
         url: https://grafana.net
       server:
-        root_url: https://~iac:subdomain_prefix~-grafana.~iac:root_domain~
+        root_url: https://grafana.~iac:subdomain_prefix~.~iac:root_domain~
       smtp:
         enabled: true
         host: smtp.sendgrid.net:587
@@ -81,7 +81,7 @@ kube-prometheus-stack:
       - operator: Exists
         effect: NoExecute
 
-# TODO: change to monitor k3s
+# TODO: configure
 
   kubeEtcd:
     enabled: false

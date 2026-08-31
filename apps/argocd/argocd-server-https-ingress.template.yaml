@@ -6,7 +6,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
   rules:
-    - host: __SUBDOMAIN_PREFIX__-argocd.__ROOT_DOMAIN__
+    - host: argocd.__SUBDOMAIN_PREFIX__.__ROOT_DOMAIN__
       http:
         paths:
           - path: /
@@ -18,5 +18,5 @@ spec:
                   name: http
   tls:
   - hosts:
-    - __SUBDOMAIN_PREFIX__-argocd.__ROOT_DOMAIN__
+    - argocd.__SUBDOMAIN_PREFIX__.__ROOT_DOMAIN__
     secretName: argocd-tls

@@ -1,4 +1,4 @@
-domain: "~iac:subdomain_prefix~-vault.~iac:root_domain~"
+domain: "vault.~iac:subdomain_prefix~.~iac:root_domain~"
 
 # built Dec 16, 2022 from docker/vault_export
 vaultExportImage: ghcr.io/kamatera/kamateratoolbox-iac-vault-export:60a38c5c274c019f91d7f00148873ede80b31d4d

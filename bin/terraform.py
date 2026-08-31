@@ -7,6 +7,7 @@ import subprocess
 TF_VAR_environment_name = os.environ.get("TF_VAR_environment_name")
 TF_VAR_sub_environment_name = os.environ.get("TF_VAR_sub_environment_name")
 TF_VAR_backend_conn_str = os.environ.get('TF_VAR_backend_conn_str')
+TF_BACKEND_SCHEMA_BASE_NAME = os.environ['TF_BACKEND_SCHEMA_BASE_NAME']
 
 
 HELP = '''
@@ -27,7 +28,7 @@ def get_init_args(*args):
     if TF_VAR_backend_conn_str:
         args = [
             f"-backend-config=conn_str={TF_VAR_backend_conn_str}",
-            f"-backend-config=schema_name=kamateratoolboxiactf{get_sub_environment_name()}",
+            f"-backend-config=schema_name={TF_BACKEND_SCHEMA_BASE_NAME}{get_sub_environment_name()}",
             *args,
         ]
     return [*args]

@@ -1,12 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: state-db-lb
+  name: state-db-nodeport
 spec:
-  type: LoadBalancer
+  type: NodePort
   selector:
     app: state-db
   ports:
-  - name: "21543"
-    port: 21543
+  - name: "31543"
+    port: 31543
     targetPort: 5432
+    nodePort: 31543

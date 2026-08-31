@@ -1,11 +1,11 @@
 resource "null_resource" "vault_init" {
   triggers = {
-    command = "python3 vault_init.py https://${var.subdomain_prefix}-vault.${var.root_domain} ${var.initial_admin_user}"
+    command = "python3 vault_init.py https://vault.${var.subdomain_prefix}.${var.root_domain} ${var.initial_admin_user}"
     md5 = md5(file("${path.module}/vault_init.py"))
   }
   provisioner "local-exec" {
     command = <<-EOF
-      ${var.set_context} &&\
+      export KUBECONFIG=${var.admin_kubeconfig_path} &&\
       cd ${path.module} &&\
       ${self.triggers.command}
     EOF

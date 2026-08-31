@@ -4,6 +4,7 @@ terraform {
   required_providers {
     kamatera = {
       source = "Kamatera/kamatera"
+      version = "0.9.4"
     }
     null = {
       source  = "hashicorp/null"
@@ -15,6 +16,7 @@ terraform {
     }
     cloudflare = {
       source = "cloudflare/cloudflare"
+      version = "5.22.0"
     }
     statuscake = {
       source = "StatusCakeDev/statuscake"

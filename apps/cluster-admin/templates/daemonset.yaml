@@ -43,39 +43,39 @@ spec:
           volumeMounts:
             - name: hostssh
               mountPath: /hostssh
-        - name: sshd
-          # Built from docker/certbot on Dec 11, 2022
-          # We use this image because it contains the dependencies we need
-          image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
-          env:
-            - name: INTERNAL_IP
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
-          command:
-            - bash
-            - -c
-            - |
-              if [ -z "$INTERNAL_IP" ]; then
-                echo failed to get internal ip && exit 1
-              fi &&\
-              if ! [ -f /mnt/host/etc/systemd/system/ssh.socket.d/override.conf ]; then
-                TEMPFILE="$(mktemp)" &&\
-                cp /mnt/ssh-access-point/privatekey $TEMPFILE &&\
-                chmod 400 $TEMPFILE &&\
-                ssh -i $TEMPFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$INTERNAL_IP "
-                  mkdir -p /etc/systemd/system/ssh.socket.d &&\
-                  echo -e '[Socket]\nListenStream=\nListenStream='$INTERNAL_IP':22' > /etc/systemd/system/ssh.socket.d/override.conf &&\
-                  systemctl daemon-reload &&\
-                  systemctl stop ssh.service &&\
-                  systemctl restart ssh.socket
-                "
-              fi
-          volumeMounts:
-            - name: host
-              mountPath: /mnt/host
-            - name: ssh-access-point
-              mountPath: /mnt/ssh-access-point
+#        - name: sshd
+#          # Built from docker/certbot on Dec 11, 2022
+#          # We use this image because it contains the dependencies we need
+#          image: ghcr.io/kamatera/kamateratoolbox-iac-certbot:8433ac3d1ec7ee901afb3a8894d8a251d5a409dc
+#          env:
+#            - name: INTERNAL_IP
+#              valueFrom:
+#                fieldRef:
+#                  fieldPath: status.hostIP
+#          command:
+#            - bash
+#            - -c
+#            - |
+#              if [ -z "$INTERNAL_IP" ]; then
+#                echo failed to get internal ip && exit 1
+#              fi &&\
+#              if ! [ -f /mnt/host/etc/systemd/system/ssh.socket.d/override.conf ]; then
+#                TEMPFILE="$(mktemp)" &&\
+#                cp /mnt/ssh-access-point/privatekey $TEMPFILE &&\
+#                chmod 400 $TEMPFILE &&\
+#                ssh -i $TEMPFILE -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@$INTERNAL_IP "
+#                  mkdir -p /etc/systemd/system/ssh.socket.d &&\
+#                  echo -e '[Socket]\nListenStream=\nListenStream='$INTERNAL_IP':22' > /etc/systemd/system/ssh.socket.d/override.conf &&\
+#                  systemctl daemon-reload &&\
+#                  systemctl stop ssh.service &&\
+#                  systemctl restart ssh.socket
+#                "
+#              fi
+#          volumeMounts:
+#            - name: host
+#              mountPath: /mnt/host
+#            - name: ssh-access-point
+#              mountPath: /mnt/ssh-access-point
       containers:
         - name: pause
           image: k8s.gcr.io/pause:3.2
@@ -83,9 +83,9 @@ spec:
         - name: hostssh
           hostPath:
             path: /root/.ssh
-        - name: host
-          hostPath:
-            path: /
-        - name: ssh-access-point
-          secret:
-            secretName: ssh-access-point
+#        - name: host
+#          hostPath:
+#            path: /
+#        - name: ssh-access-point
+#          secret:
+#            secretName: ssh-access-point

@@ -6,7 +6,7 @@ resource "null_resource" "deploy_argocd" {
   }
   provisioner "local-exec" {
     command = <<-EOF
-      ${var.set_context} &&\
+      export KUBECONFIG=${var.admin_kubeconfig_path} &&\
       cd ${path.cwd} &&\
       ${self.triggers.command}
     EOF

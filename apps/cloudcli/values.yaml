@@ -1,8 +1,7 @@
 image: kamatera/cloudcli-server:8d4ed418ca3c2a2b0de73a0818f020653a8e2bf3
 minReplicas: 4
 maxReplicas: 15
-#cloudcliServerDomain: "cloudcli.cloudwm.com"
-cloudcliServerDomain: "cloudcli.~iac:subdomain_prefix~.~iac:root_domain~"
+cloudcliServerDomain: "cloudcli.cloudwm.com"
 nfs_private_ip: "~iac:nfs_private_ip~"
 
 k8s:

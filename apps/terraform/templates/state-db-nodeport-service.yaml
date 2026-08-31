@@ -10,3 +10,4 @@ spec:
   - name: "21543"
     port: 21543
     targetPort: 5432
+    nodePort: 21543

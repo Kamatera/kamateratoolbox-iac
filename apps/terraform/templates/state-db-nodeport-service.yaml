@@ -7,7 +7,7 @@ spec:
   selector:
     app: state-db
   ports:
-  - name: "21543"
-    port: 21543
+  - name: "31543"
+    port: 31543
     targetPort: 5432
-    nodePort: 21543
+    nodePort: 31543

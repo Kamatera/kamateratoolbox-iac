@@ -6,7 +6,7 @@ apps:
   destinationNamespace: cloudcli
   source:
     repoURL: https://github.com/Kamatera/kamateratoolbox-iac.git
-    targetRevision: rke2
+    targetRevision: main
     path: apps/cloudcli
   sourceVaultPluginHelmValueFiles:
   - values.yaml

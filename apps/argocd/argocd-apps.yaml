@@ -10,7 +10,7 @@ spec:
     server: 'https://kubernetes.default.svc'
   source:
     repoURL: 'https://github.com/Kamatera/kamateratoolbox-iac.git'
-    targetRevision: rke2
+    targetRevision: main
     path: apps/argocd-apps
     helm:
       valueFiles:

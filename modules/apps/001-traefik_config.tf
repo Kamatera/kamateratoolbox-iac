@@ -3,7 +3,7 @@ resource "kubernetes_manifest" "traefik_helm_config" {
 apiVersion: helm.cattle.io/v1
 kind: HelmChartConfig
 metadata:
-  name: traefik
+  name: rke2-traefik
   namespace: kube-system
 spec:
   valuesContent: |-
@@ -11,6 +11,12 @@ spec:
       replicas: 3
     additionalArguments:
       - "--entrypoints.websecure.transport.respondingtimeouts.readtimeout=240s"
+    providers:
+      kubernetesIngress:
+        publishedService:
+          enabled: false
+        ingressEndpoint:
+          hostname: "${var.subdomain_prefix}ingress.${var.root_domain}"
 EOF
 )
 }

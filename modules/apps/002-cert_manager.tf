@@ -4,8 +4,8 @@ resource "null_resource" "deploy_cert_manager" {
   }
   provisioner "local-exec" {
     command = <<-EOF
-      ${var.set_context} &&\
-      kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.16.3/cert-manager.yaml
+      KUBECONFIG=${var.admin_kubeconfig_path} \
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.21.1/cert-manager.yaml
     EOF
   }
 }

@@ -2,8 +2,8 @@ prometheusNagiosSender:
   enabled: true
   # this is built from https://github.com/CloudWebManage/cwm-iac/tree/main/docker/prometheus_nagios_checks_sender
   image: ghcr.io/cloudwebmanage/cwm-iac-prometheus-nagios-checks-sender:f741c4e8e86ece348c09e9744cf6a645b5aceb7c
-  debug: true
-  dryRun: true
+  debug: false
+  dryRun: false
 
 secrets:
 - name: prometheus-httpauth

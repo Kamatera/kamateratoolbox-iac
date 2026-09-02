@@ -53,3 +53,7 @@ variable "ssh_additional_authorized_keys" {
 variable "alert_email_addresses" {
   type = string
 }
+
+variable "prometheus_nagios_sender" {
+  type = any
+}

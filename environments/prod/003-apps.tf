@@ -14,6 +14,7 @@ module "apps" {
   ssh_pubkey = file("${path.cwd}/${var.ssh_pubkey_file}")
   ssh_additional_authorized_keys = jsondecode(var.ssh_additional_authorized_keys_json)
   alert_email_addresses = var.alert_email_addresses
+  prometheus_nagios_sender = module.private.data.prometheus_nagios_sender
 }
 
 

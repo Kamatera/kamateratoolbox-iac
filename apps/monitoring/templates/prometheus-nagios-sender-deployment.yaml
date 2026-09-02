@@ -1,0 +1,58 @@
+{{ if .Values.prometheusNagiosSender.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-nagios-sender
+spec:
+  selector:
+    matchLabels:
+      app: prometheus-nagios-sender
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: prometheus-nagios-sender
+    spec:
+      volumes:
+        - name: secret
+          secret:
+            secretName: prometheus-nagios-sender-etc
+      containers:
+        - name: sender
+          image: {{ .Values.prometheusNagiosSender.image | quote }}
+          args:
+            - "/etc/prometheus-nagios-sender/config.yaml"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+          volumeMounts:
+            - name: secret
+              mountPath: /etc/prometheus-nagios-sender
+              readOnly: true
+          envFrom:
+            - secretRef:
+                name: prometheus-nagios-sender-env
+            - secretRef:
+                name: prometheus-nagios-sender-promurl
+          env:
+            - name: SEND_NSCA_BINARY
+              value: "send_nsca"
+            - name: SEND_NSCA_CONFIG
+              value: "/etc/prometheus-nagios-sender/send_nsca.cfg"
+            - name: PYTHONUNBUFFERED
+              value: "1"
+            {{ if .Values.prometheusNagiosSender.debug }}
+            - name: SEND_NSCA_DEBUG
+              value: "yes"
+            {{ end }}
+            {{ if .Values.prometheusNagiosSender.dryRun }}
+            - name: SEND_NSCA_DRY_RUN
+              value: "yes"
+            {{ end }}
+{{ end }}

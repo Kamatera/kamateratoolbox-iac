@@ -62,3 +62,41 @@ resource "null_resource" "set_grafana_default_contactpoint" {
     command = self.triggers.command
   }
 }
+
+resource "kubernetes_secret_v1" "monitoring_additional_scrape_configs" {
+  metadata {
+    name      = "monitoring-additional-scrape-configs"
+    namespace = "monitoring"
+  }
+  data = {
+    "additional-scrape-configs.yaml" = <<-EOT
+- job_name: external-nodes
+  static_configs:
+    - targets:
+        - ${var.nfs_private_ip}:9100
+      labels:
+        instance: nfs
+    - targets:
+        - ${var.bastion_private_ip}:9100
+      labels:
+        instance: bastion
+EOT
+  }
+}
+
+resource "terraform_data" "install_node_exporter" {
+  for_each = toset(["cloudcliprod2-nfs", "cloudcliprod2-bastion"])
+  triggers_replace = {
+    command = <<-EOF
+ssh ${each.key} "
+set -euo pipefail
+apt update
+apt install -y prometheus-node-exporter
+"
+EOF
+  }
+  provisioner "local-exec" {
+    command = self.triggers_replace.command
+    interpreter = ["bash", "-c"]
+  }
+}

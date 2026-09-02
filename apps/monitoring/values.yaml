@@ -68,16 +68,10 @@ kube-prometheus-stack:
             resources:
               requests:
                 storage: 100Gi
-# TODO: change to monitor the embedded k3s etcd
-#      volumes:
-#        - name: etcd-certs
-#          secret:
-#              secretName: etcd-certs
-#      volumeMounts:
-#        - name: etcd-certs
-#          mountPath: /etc/etcd-certs
-#          readOnly: true
-
+      additionalScrapeConfigsSecret:
+        enabled: true
+        name: monitoring-additional-scrape-configs
+        key: additional-scrape-configs.yaml
   prometheus-node-exporter:
     priorityClassName: system-node-critical
     tolerations:

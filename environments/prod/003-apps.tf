@@ -15,8 +15,8 @@ module "apps" {
   ssh_additional_authorized_keys = jsondecode(var.ssh_additional_authorized_keys_json)
   alert_email_addresses = var.alert_email_addresses
   prometheus_nagios_sender = module.private.data.prometheus_nagios_sender
+  bastion_private_ip = kamatera_server.bastion.private_ips[0]
 }
-
 
 output "apps_domain_suffix" {
   value = ".${module.private.data.subdomain_prefix}.${module.private.data.root_domain}"

@@ -57,3 +57,7 @@ variable "alert_email_addresses" {
 variable "prometheus_nagios_sender" {
   type = any
 }
+
+variable "bastion_private_ip" {
+  type = string
+}

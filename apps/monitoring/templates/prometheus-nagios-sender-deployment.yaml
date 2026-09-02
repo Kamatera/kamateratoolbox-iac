@@ -44,7 +44,7 @@ spec:
             - name: SEND_NSCA_BINARY
               value: "send_nsca"
             - name: SEND_NSCA_CONFIG
-              value: "/etc/prometheus-nagios-sender/send_nsca.cfg"
+              value: "/etc/prometheus-nagios-sender/send_ncsa.cfg"
             - name: PYTHONUNBUFFERED
               value: "1"
             {{ if .Values.prometheusNagiosSender.debug }}

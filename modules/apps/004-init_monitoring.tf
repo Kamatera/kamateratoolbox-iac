@@ -74,12 +74,8 @@ resource "kubernetes_secret_v1" "monitoring_additional_scrape_configs" {
   static_configs:
     - targets:
         - ${var.nfs_private_ip}:9100
-      labels:
-        instance: nfs
     - targets:
         - ${var.bastion_private_ip}:9100
-      labels:
-        instance: bastion
 EOT
   }
 }
@@ -92,6 +88,7 @@ ssh ${each.key} "
 set -euo pipefail
 apt update
 apt install -y prometheus-node-exporter
+ufw allow in on eth1 to 172.16.0.8 port 9100 proto tcp
 "
 EOF
   }
